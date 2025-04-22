@@ -1,0 +1,76 @@
+// Variables de couleur
+$green: #3E7D40;
+$brown: #8B5E3C;
+$light-beige: #F5EDE0;
+
+// Styles généraux
+   body {
+       font-family: 'Arial', sans-serif;
+       background-color: $light-beige;
+       color: $brown;
+   }
+
+// HEADER
+   .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background-color: $green;
+       padding: 10px 20px;
+       color: white;
+
+       .logo {
+           font-size: 24px;
+           font-weight: bold;
+       }
+
+       .search-bar {
+           display: flex;
+           align-items: center;
+
+           input {
+               padding: 5px;
+               border: none;
+               border-radius: 5px;
+           }
+
+           i {
+               margin-left: 5px;
+           }
+       }
+
+       .profile-icon i {
+           font-size: 20px;
+           cursor: pointer;
+       }
+   }
+
+// SLIDER DE CARTES
+   .slider {
+       display: flex;
+       overflow-x: scroll;
+       scroll-snap-type: x mandatory;
+       padding: 20px;
+
+       .cards {
+           display: flex;
+           gap: 20px;
+
+           .card {
+               min-width: 250px;
+               background: white;
+               border-radius: 10px;
+               padding: 15px;
+               box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+               scroll-snap-align: start;
+           }
+       }
+   }
+
+// FOOTER
+   .footer {
+       text-align: center;
+       background-color: $brown;
+       color: white;
+       padding: 10px;
+   }

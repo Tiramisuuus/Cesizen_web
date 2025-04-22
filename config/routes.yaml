@@ -1,0 +1,12 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+auth0_login:
+    path: /connect/auth0
+    controller: App\Controller\Auth0Controller::redirectToAuth0
+
+auth0_callback:
+    path: /auth/callback
+    controller: App\Controller\Auth0Controller::connectCheckAction
