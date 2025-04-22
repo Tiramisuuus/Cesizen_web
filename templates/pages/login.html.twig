@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('styles/pages/auth.css') }}">
+</head>
+<body class="auth-body">
+<main class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">Connexion</h1>
+        {{ form_start(loginForm) }}
+        <div class="auth-field">
+            {{ form_label(loginForm.email) }}
+            {{ form_widget(loginForm.email) }}
+        </div>
+        <div class="auth-field">
+            {{ form_label(loginForm.password) }}
+            {{ form_widget(loginForm.password) }}
+        </div>
+        <button type="submit" class="auth-btn">Se connecter</button>
+        {{ form_end(loginForm) }}
+        <p class="auth-link">Pas encore de compte ? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+    </div>
+</main>
+</body>
+</html>

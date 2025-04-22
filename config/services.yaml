@@ -9,6 +9,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    App\Security\Auth0Authenticator:
-        public: true
