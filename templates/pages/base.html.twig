@@ -1,11 +1,31 @@
+
+
+{# templates/base.html.twig #}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <link rel="stylesheet" href="{{ asset('styles/style.css') }}">
     <meta charset="UTF-8">
     <title>{% block title %}Cesizen{% endblock %}</title>
-{#    <link rel="stylesheet" href="/assets/styles.scss" />#}
+    {#    <link rel="stylesheet" href="/assets/styles.scss" />#}
 </head>
 <body>
-{% block body %}{% endblock %}
+{# ————— Flash overlay ————— #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<header class="site-header">
+    {# ... votre header existant ... #}
+</header>
+
+<main>
+    {% block body %}{% endblock %}
+</main>
 </body>
 </html>
+

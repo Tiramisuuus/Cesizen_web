@@ -1,27 +1,63 @@
+{# templates/pages/register.html.twig #}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('styles/pages/auth.css') }}">
+
+    {# Google Fonts #}
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap"
+            rel="stylesheet"
+    >
+
+    {# Votre CSS public #}
+    <link rel="stylesheet" href="{{ asset('styles/pages/register.css') }}">
 </head>
-<body class="auth-body">
-<main class="auth-container">
-    <div class="auth-card">
-        <h1 class="auth-title">Inscription</h1>
+<body class="register-body">
+<main class="register-container">
+    <div class="register-card">
+        <h1 class="register-title">Inscription</h1>
+
         {{ form_start(registerForm) }}
-        <div class="auth-field">
-            {{ form_label(registerForm.email) }}
-            {{ form_widget(registerForm.email) }}
+        {{ form_errors(registerForm) }}
+
+        <div class="register-field">
+            {{ form_row(registerForm.username) }}
         </div>
-        <div class="auth-field">
-            {{ form_label(registerForm.plainPassword) }}
-            {{ form_widget(registerForm.plainPassword) }}
+        <div class="register-field">
+            {{ form_row(registerForm.email) }}
         </div>
-        <button type="submit" class="auth-btn">Créer mon compte</button>
+        <div class="register-field">
+            {{ form_row(registerForm.password) }}
+        </div>
+        <div class="register-field">
+            {{ form_row(registerForm.plainPassword) }}
+        </div>
+
+        <div class="register-terms">
+            {{ form_widget(registerForm.terms, { attr: { class: 'terms-checkbox' } }) }}
+            <label for="{{ registerForm.terms.vars.id }}" class="terms-label">
+                J’accepte les <a href="/" target="_blank">termes et conditions</a>
+            </label>
+            {{ form_errors(registerForm.terms) }}
+        </div>
+
+        <div class="register-field">
+            {{ form_row(registerForm.submit, {
+                attr: { class: 'register-btn' }
+            }) }}
+        </div>
+
+        {{ form_rest(registerForm) }}
         {{ form_end(registerForm) }}
-        <p class="auth-link">Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+
+
+        <p class="register-link">
+            Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a>
+        </p>
     </div>
 </main>
 </body>

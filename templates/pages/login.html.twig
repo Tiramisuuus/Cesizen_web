@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,23 +7,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('styles/pages/auth.css') }}">
 </head>
-<body class="auth-body">
+
+{% block body %}
+
+    <body class="auth-body">
+{# Affichage des flash-messages #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
 <main class="auth-container">
     <div class="auth-card">
         <h1 class="auth-title">Connexion</h1>
+
         {{ form_start(loginForm) }}
         <div class="auth-field">
-            {{ form_label(loginForm.email) }}
-            {{ form_widget(loginForm.email) }}
+            {{ form_row(loginForm.email) }}
         </div>
         <div class="auth-field">
-            {{ form_label(loginForm.password) }}
-            {{ form_widget(loginForm.password) }}
+            {{ form_row(loginForm.password) }}
         </div>
-        <button type="submit" class="auth-btn">Se connecter</button>
-        {{ form_end(loginForm) }}
+
+        {# Nouveau bouton stylé #}
+        <div class="auth-field">
+            <button type="submit" class="auth-btn">Se connecter</button>
+        </div>
+
+
+
         <p class="auth-link">Pas encore de compte ? <a href="{{ path('app_register') }}">Créer un compte</a></p>
     </div>
 </main>
 </body>
+{% endblock %}
 </html>

@@ -5,58 +5,64 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface
-
+#[ORM\Table(name: '`user`')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private string $email;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Password = null;
+    #[ORM\Column(type: 'string')]
+    private string $password;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $CreationDate = null;
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $username = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: 'string', length: 20)]
+    private string $role = 'ROLE_USER';
 
-    #[ORM\Column]
-    private ?bool $IsActive = null;
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive = true;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $createdAt;
 
     /**
      * @var Collection<int, EmotionTracker>
      */
-    #[ORM\OneToMany(targetEntity: EmotionTracker::class, mappedBy: 'UserId')]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: EmotionTracker::class, orphanRemoval: true)]
     private Collection $emotionTrackers;
 
     /**
      * @var Collection<int, EmergencyInformations>
      */
-    #[ORM\ManyToMany(targetEntity: EmergencyInformations::class, inversedBy: 'SavedByUserId')]
-    private Collection $Saved;
+    #[ORM\ManyToMany(targetEntity: EmergencyInformations::class)]
+    #[ORM\JoinTable(name: 'user_saved_emergency')]
+    private Collection $savedEmergency;
 
     /**
      * @var Collection<int, InformationsRessources>
      */
-    #[ORM\ManyToMany(targetEntity: InformationsRessources::class, inversedBy: 'faveByUserId')]
-    private Collection $Favorite;
+    #[ORM\ManyToMany(targetEntity: InformationsRessources::class)]
+    #[ORM\JoinTable(name: 'user_favorite_resources')]
+    private Collection $favoriteResources;
 
     public function __construct()
     {
-        $this->emotionTrackers = new ArrayCollection();
-        $this->Saved = new ArrayCollection();
-        $this->Favorite = new ArrayCollection();
+        $this->emotionTrackers      = new ArrayCollection();
+        $this->savedEmergency       = new ArrayCollection();
+        $this->favoriteResources     = new ArrayCollection();
+        $this->createdAt            = new \DateTime();
+        $this->isActive             = true;
     }
 
     public function getId(): ?int
@@ -64,7 +70,7 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -72,55 +78,69 @@ class User implements UserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
-        return $this->Password;
+        return $this->password;
     }
 
-    public function setPassword(string $Password): static
+    public function setPassword(string $password): static
     {
-        $this->Password = $Password;
-
+        $this->password = $password;
         return $this;
     }
 
-    public function getCreationDate(): ?\DateTimeInterface
+    public function getUsername(): ?string
     {
-        return $this->CreationDate;
+        return $this->username;
     }
 
-    public function setCreationDate(\DateTimeInterface $CreationDate): static
+    public function setUsername(?string $username): static
     {
-        $this->CreationDate = $CreationDate;
-
+        $this->username = $username;
         return $this;
     }
 
-    public function getName(): ?string
+    /**
+     * Retourne le rôle sous forme d'un tableau pour Symfony
+     */
+    public function getRoles(): array
     {
-        return $this->Name;
+        return [$this->role];
     }
 
-    public function setName(?string $Name): static
+    public function getRole(): string
     {
-        $this->Name = $Name;
+        return $this->role;
+    }
 
+    public function setRole(string $role): static
+    {
+        $this->role = strtoupper($role);
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function isActive(): bool
     {
-        return $this->IsActive;
+        return $this->isActive;
     }
 
-    public function setIsActive(bool $IsActive): static
+    public function setIsActive(bool $isActive): static
     {
-        $this->IsActive = $IsActive;
+        $this->isActive = $isActive;
+        return $this;
+    }
 
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
         return $this;
     }
 
@@ -132,88 +152,76 @@ class User implements UserInterface
         return $this->emotionTrackers;
     }
 
-    public function addEmotionTracker(EmotionTracker $emotionTracker): static
+    public function addEmotionTracker(EmotionTracker $tracker): static
     {
-        if (!$this->emotionTrackers->contains($emotionTracker)) {
-            $this->emotionTrackers->add($emotionTracker);
-            $emotionTracker->setUserId($this);
+        if (!$this->emotionTrackers->contains($tracker)) {
+            $this->emotionTrackers->add($tracker);
+            $tracker->setUser($this);
         }
-
         return $this;
     }
 
-    public function removeEmotionTracker(EmotionTracker $emotionTracker): static
+    public function removeEmotionTracker(EmotionTracker $tracker): static
     {
-        if ($this->emotionTrackers->removeElement($emotionTracker)) {
-            // set the owning side to null (unless already changed)
-            if ($emotionTracker->getUserId() === $this) {
-                $emotionTracker->setUserId(null);
+        if ($this->emotionTrackers->removeElement($tracker)) {
+            if ($tracker->getUser() === $this) {
+                $tracker->setUser(null);
             }
         }
-
         return $this;
     }
 
     /**
      * @return Collection<int, EmergencyInformations>
      */
-    public function getSaved(): Collection
+    public function getSavedEmergency(): Collection
     {
-        return $this->Saved;
+        return $this->savedEmergency;
     }
 
-    public function addSaved(EmergencyInformations $saved): static
+    public function addSavedEmergency(EmergencyInformations $info): static
     {
-        if (!$this->Saved->contains($saved)) {
-            $this->Saved->add($saved);
+        if (!$this->savedEmergency->contains($info)) {
+            $this->savedEmergency->add($info);
         }
-
         return $this;
     }
 
-    public function removeSaved(EmergencyInformations $saved): static
+    public function removeSavedEmergency(EmergencyInformations $info): static
     {
-        $this->Saved->removeElement($saved);
-
+        $this->savedEmergency->removeElement($info);
         return $this;
     }
 
     /**
      * @return Collection<int, InformationsRessources>
      */
-    public function getFavorite(): Collection
+    public function getFavoriteResources(): Collection
     {
-        return $this->Favorite;
+        return $this->favoriteResources;
     }
 
-    public function addFavorite(InformationsRessources $favorite): static
+    public function addFavoriteResource(InformationsRessources $res): static
     {
-        if (!$this->Favorite->contains($favorite)) {
-            $this->Favorite->add($favorite);
+        if (!$this->favoriteResources->contains($res)) {
+            $this->favoriteResources->add($res);
         }
-
         return $this;
     }
 
-    public function removeFavorite(InformationsRessources $favorite): static
+    public function removeFavoriteResource(InformationsRessources $res): static
     {
-        $this->Favorite->removeElement($favorite);
-
+        $this->favoriteResources->removeElement($res);
         return $this;
-    }
-
-    public function getRoles(): array
-    {
-        return ['ROLE_USER'];
     }
 
     public function getUserIdentifier(): string
     {
-        return $this->getEmail();
+        return $this->email;
     }
 
     public function eraseCredentials(): void
     {
+        // Si vous aviez des champs temporaires, les nettoyer ici.
     }
-
 }

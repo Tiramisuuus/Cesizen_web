@@ -1,21 +1,27 @@
+{# templates/components/header.html.twig #}
 <link rel="stylesheet" href="{{ asset('styles/components/header.css') }}">
 
 <nav>
     <div class="logo">
         <img src="{{ asset('images/CesizenLogo.png') }}" alt="Cesizen logo" class="Cesizen-logo">
-
     </div>
     <ul>
         <li><a href="#">Diagnostic</a></li>
         <li><a href="#">Respiration</a></li>
         <li><a href="#">Emotions</a></li>
-        <li><a href="/register">Inscription</a></li>
-        <li><a href="/login">Connexion</a></li>
-        <li><a href="#">Profil</a></li>
-        <li><a href="/logout">Déconnexion</a></li>
 
+        {# Affichage conditionnel selon la session #}
+        {% if app.session.get('user_id') %}
+            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+        {% else %}
+            <li><a href="{{ path('app_register') }}">Inscription</a></li>
+            <li><a href="{{ path('app_login') }}">Connexion</a></li>
+        {% endif %}
 
-
+        {# Optionnel : accès au profil si connecté #}
+        {% if app.session.get('user_id') %}
+            <li><a href="/">Profil</a></li>
+        {% endif %}
     </ul>
 </nav>
 <header>
@@ -27,8 +33,5 @@
     </div>
 </header>
 
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ asset('js/header.js') }}" defer></script>
-
-
