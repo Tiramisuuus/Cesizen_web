@@ -1,37 +1,48 @@
-{# templates/components/header.html.twig #}
-<link rel="stylesheet" href="{{ asset('styles/components/header.css') }}">
+<link rel="stylesheet" href="{{ asset('styles/header.css') }}">
+<header class="main-header">
+    <div class="container">
+        <a href="/" class="logo" aria-label="Accueil Cesizen">
+            <img src="{{ asset('images/CesizenLogo.png') }}" alt="Logo Cesizen">
+        </a>
 
-<nav>
-    <div class="logo">
-        <img src="{{ asset('images/CesizenLogo.png') }}" alt="Cesizen logo" class="Cesizen-logo">
-    </div>
-    <ul>
-        <li><a href="#">Diagnostic</a></li>
-        <li><a href="#">Respiration</a></li>
-        <li><a href="#">Emotions</a></li>
+        <input type="checkbox" id="menu-toggle" class="menu-toggle">
+        <label for="menu-toggle" class="hamburger" aria-label="Ouvrir le menu">
+            <span></span><span></span><span></span>
+        </label>
 
-        {# Affichage conditionnel selon la session #}
-        {% if app.session.get('user_id') %}
-            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
-        {% else %}
-            <li><a href="{{ path('app_register') }}">Inscription</a></li>
-            <li><a href="{{ path('app_login') }}">Connexion</a></li>
-        {% endif %}
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="{{ path('information_index') }}">Ressources</a></li>
 
-        {# Optionnel : accès au profil si connecté #}
-        {% if app.session.get('user_id') %}
-            <li><a href="/">Profil</a></li>
-        {% endif %}
-    </ul>
-</nav>
-<header>
-    <div class="headline">
-        <div class="inner">
-            <h1>Hello</h1>
-            <p>Scroll down the page</p>
-        </div>
+                {% if app.request.getSession().get('user_id') %}
+                    <li><a href="/profile">Mon Profil</a></li>
+                    <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                    {% set role   = app.request.getSession().get('user_role') %}
+                    {% if role == 'ROLE_ADMIN' %}
+                        <li><a href="/admin/users">Administrateur</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{{ path('app_login') }}">Connexion</a></li>
+                    <li><a href="{{ path('app_register') }}">Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 </header>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="{{ asset('js/header.js') }}" defer></script>
+<script>
+    // Ferme le menu mobile quand un lien est cliqué
+    document.querySelectorAll('.main-nav a').forEach(link => {
+        link.addEventListener('click', () => {
+            const toggle = document.getElementById('menu-toggle');
+            if (toggle.checked) toggle.checked = false;
+        });
+    });
+
+    // Animation header au scroll
+    const header = document.querySelector('.main-header');
+    window.addEventListener('scroll', () => {
+        header.classList.toggle('scrolled', window.scrollY > 10);
+    });
+</script>

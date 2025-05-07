@@ -10,14 +10,14 @@ class PrimaryEmotions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $description = null;
 
     public function getId(): ?int
     {
@@ -26,25 +26,23 @@ class PrimaryEmotions
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(?string $Name): static
+    public function setName(?string $name): self
     {
-        $this->Name = $Name;
-
+        $this->name = $name;
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
-
+        $this->description = $description;
         return $this;
     }
 }

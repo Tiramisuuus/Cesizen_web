@@ -1,0 +1,217 @@
+:root {
+    --violet: #8460f4;
+    --violet-dark: #4b0082;
+    --white: #fff;
+    --text-dark: #333;
+    --error-red: #e74c3c;
+    --card-bg: #ffffff;
+    --input-border: #ccc;
+    --input-bg: #fdfdff;
+    --transition: 0.25s ease;
+}
+
+.tracker-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem 2.5rem;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', sans-serif;
+}
+
+.tracker-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: var(--violet-dark);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.tracker-subtitle {
+    font-size: 1rem;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 2rem;
+}
+
+.flash-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 6px solid #28a745;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.emotion-form .form-group {
+    margin-bottom: 1.8rem;
+}
+
+.emotion-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--violet-dark);
+}
+
+.emotion-form input[type="text"],
+.emotion-form textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.emotion-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.emotion-form input:focus,
+.emotion-form textarea:focus {
+    outline: none;
+    border-color: var(--violet);
+    box-shadow: 0 0 0 3px rgba(132, 96, 244, 0.2);
+}
+
+/* Slider */
+.range-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.range-wrapper span {
+    min-width: 2rem;
+    font-weight: bold;
+    color: var(--violet);
+}
+
+input[type="range"] {
+    flex-grow: 1;
+}
+
+/* Group of checkboxes for emotions */
+.form-group .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+}
+
+/.form-group .checkbox-grid label {
+     display: flex;
+     align-items: center;
+     font-weight: 500;
+     color: #444;
+     gap: 0.5rem;
+     cursor: pointer;
+ }
+
+/* Action buttons */
+.form-actions {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.btn-primary {
+    background: var(--violet);
+    color: var(--white);
+    padding: 0.7rem 1.6rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+}
+
+.btn-primary:hover {
+    background: var(--violet-dark);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .tracker-container {
+        padding: 1.5rem;
+    }
+
+    .form-group .checkbox-grid {
+        grid-template-columns: 1fr 1fr;
+        max-height: 240px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-group .checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Style personnalisé pour la barre d'intensité */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, var(--violet) 0%, var(--violet-light, #d1c4f7) 100%);
+    outline: none;
+    transition: background 0.3s ease;
+}
+
+/* Barre de fond après le curseur */
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: var(--input-border);
+    border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: var(--input-border);
+    border-radius: 4px;
+}
+
+/* Curseur (le rond) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    background: var(--violet-dark);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    background: var(--violet-dark);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover,
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.15);
+}
+
+/* Affichage du score à côté */
+.range-wrapper span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--violet-dark);
+}

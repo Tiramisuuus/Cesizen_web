@@ -1,0 +1,39 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/new_resource.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="admin-container">
+        <h1 class="admin-title">Ajouter une ressource</h1>
+
+        {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'placeholder': 'Titre de la ressource'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'placeholder': 'Résumé rapide'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.content) }}
+            {{ form_widget(form.content, {'attr': {'placeholder': 'Contenu détaillé', 'rows': 6}}) }}
+            {{ form_errors(form.content) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Créer</button>
+            <a href="{{ path('information_index') }}" class="btn-secondary">Annuler</a>
+        </div>
+
+        {{ form_end(form) }}
+    </main>
+{% endblock %}

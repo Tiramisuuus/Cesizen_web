@@ -1,0 +1,126 @@
+/* Gestion des émotions secondaires - Admin */
+
+:root {
+    --violet: #8e44ad;
+    --violet-light: #f5e9fa;
+    --violet-dark: #5e3370;
+    --gray-light: #f0f0f0;
+    --gray-medium: #999;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    color: var(--violet-dark);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Bouton principal d'action (Ajout) */
+.admin-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.admin-actions .btn-primary {
+    background: var(--violet);
+    color: #fff;
+    padding: 0.6rem 1.4rem;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-actions .btn-primary:hover {
+    background: var(--violet-dark);
+    transform: translateY(-2px);
+}
+
+/* Tableau */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.05);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.admin-table th {
+    background: var(--violet-light);
+    font-weight: 600;
+    color: var(--violet-dark);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cellule actions */
+.admin-table .actions-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Boutons d'action (modifier/supprimer) */
+.btn-edit,
+.btn-delete {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 0.3rem;
+}
+
+.btn-edit:hover {
+    color: var(--violet-dark);
+    transform: scale(1.15);
+}
+
+.btn-delete:hover {
+    color: #e74c3c;
+    transform: scale(1.15);
+}
+
+.inline-form {
+    display: inline;
+}
+
+/* Aucun résultat */
+.no-data {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-title {
+        font-size: 1.5rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .admin-actions .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+    }
+}

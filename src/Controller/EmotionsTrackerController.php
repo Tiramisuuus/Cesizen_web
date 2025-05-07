@@ -2,44 +2,96 @@
 
 namespace App\Controller;
 
-
+use App\Entity\EmotionTracker;
+use App\Entity\User;
+use App\Form\EmotionTrackerType;
+use App\Repository\EmotionTrackerRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class EmotionsTrackerController extends AbstractController{
-
+class EmotionsTrackerController extends AbstractController
+{
     /**
-     * @return mixed
      * Route for the emotions tracker
-     * Take the user in session if exist (no emotions tracker for not registered user)
-     * create a form with all emotions ( primary and secondary ) that are linked to checkbox
-     * On form submit -> calculate emotion tracker final score and add the emotions tracker in Database
-     *
+     * Create a form with all secondary emotions (checkboxes) and a slider for score.
+     * On form submit: calculate the score and persist the EmotionTracker.
      */
-    #[Route('/Traqueur', name : 'emotions-tracker')]
-    public function emotionsTracker(){
+    #[Route('/traqueur', name: 'emotions-tracker')]
+    public function emotionsTracker(Request $request, EntityManagerInterface $em): Response
+    {
+        $session = $request->getSession();
+        $userId = $session->get('user_id');
 
+        if (!$userId) {
+            $this->addFlash('error', 'Veuillez vous connecter pour accéder au traqueur.');
+            return $this->redirectToRoute('app_login');
+        }
 
-        return $this->render('pages/emotions-tracker.html.twig');
+        $user = $em->getRepository(User::class)->find($userId);
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $tracker = new EmotionTracker();
+        $form = $this->createForm(EmotionTrackerType::class, $tracker);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $tracker->setUser($user);
+            $em->persist($tracker);
+            $em->flush();
+
+            $this->addFlash('success', 'Émotion enregistrée avec succès.');
+            return $this->redirectToRoute('emotions-tracker-list');
+        }
+
+        return $this->render('pages/emotions-tracker.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-     * @return void
-     * Shows the list of all emotions trackers linked to the user in session
+     * Shows the list of all emotions trackers linked to the user in session.
      */
-    #[Route('/Liste des traqueurs', name :'emotions-tracker-list')]
-    public function emotionsTrackerList(){
-        return $this->render('pages/emotions-tracker-list.html.twig');
+    #[Route('/traqueurs', name: 'emotions-tracker-list')]
+    public function emotionsTrackerList(Request $request, EmotionTrackerRepository $repo, EntityManagerInterface $em): Response
+    {
+        $userId = $request->getSession()->get('user_id');
+        if (!$userId) {
+            $this->addFlash('error', 'Connectez-vous pour voir vos traqueurs.');
+            return $this->redirectToRoute('app_login');
+        }
 
+        $user = $em->getRepository(User::class)->find($userId);
+        $trackers = $repo->findBy(['user' => $user]);
+
+        return $this->render('pages/emotions-tracker-list.html.twig', [
+            'trackers' => $trackers,
+        ]);
     }
 
     /**
      * Page for emotions statistics
-     *
      */
-    #[Route('/Statistiques', name:'emotions-stats')]
-    public function emotionsStats(){
-        $this->render('pages/emotions-statistics');
+    #[Route('/statistiques', name: 'emotions-stats')]
+    public function emotionsStats(Request $request, EmotionTrackerRepository $repo, EntityManagerInterface $em): Response
+    {
+        $userId = $request->getSession()->get('user_id');
+        if (!$userId) {
+            $this->addFlash('error', 'Veuillez vous connecter pour accéder aux statistiques.');
+            return $this->redirectToRoute('app_login');
+        }
 
+        $user = $em->getRepository(User::class)->find($userId);
+        $trackers = $repo->findBy(['user' => $user]);
+
+        // Stats à traiter dans le template ou service
+        return $this->render('pages/emotions-statistics.html.twig', [
+            'trackers' => $trackers,
+        ]);
     }
-
 }

@@ -13,34 +13,36 @@ class Exercises
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $CreationDate = null;
+    private ?\DateTimeInterface $creationDate = null;
 
-    /**
-     * @var Collection<int, InformationsRessources>
-     */
-    #[ORM\OneToMany(targetEntity: InformationsRessources::class, mappedBy: 'ExerciceId')]
+    #[ORM\OneToMany(
+        mappedBy: 'exercise',
+        targetEntity: InformationsRessources::class,
+        cascade: ['persist', 'remove']
+    )]
     private Collection $informationsRessources;
 
-    /**
-     * @var Collection<int, StressDiagnosticResult>
-     */
-    #[ORM\ManyToMany(targetEntity: StressDiagnosticResult::class, inversedBy: 'ExerciseId')]
-    private Collection $RecommendedExercises;
+    #[ORM\ManyToMany(
+        targetEntity: StressDiagnosticResult::class,
+        inversedBy: 'recommendedExercises'
+    )]
+    #[ORM\JoinTable(name: 'exercise_recommendation')]
+    private Collection $recommendedExercises;
 
     public function __construct()
     {
         $this->informationsRessources = new ArrayCollection();
-        $this->RecommendedExercises = new ArrayCollection();
+        $this->recommendedExercises   = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,37 +52,34 @@ class Exercises
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(?string $Name): static
+    public function setName(?string $name): static
     {
-        $this->Name = $Name;
-
+        $this->name = $name;
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): static
     {
-        $this->Description = $Description;
-
+        $this->description = $description;
         return $this;
     }
 
     public function getCreationDate(): ?\DateTimeInterface
     {
-        return $this->CreationDate;
+        return $this->creationDate;
     }
 
-    public function setCreationDate(?\DateTimeInterface $CreationDate): static
+    public function setCreationDate(?\DateTimeInterface $creationDate): static
     {
-        $this->CreationDate = $CreationDate;
-
+        $this->creationDate = $creationDate;
         return $this;
     }
 
@@ -92,22 +91,21 @@ class Exercises
         return $this->informationsRessources;
     }
 
-    public function addInformationsRessource(InformationsRessources $informationsRessource): static
+    public function addInformationsRessource(InformationsRessources $info): static
     {
-        if (!$this->informationsRessources->contains($informationsRessource)) {
-            $this->informationsRessources->add($informationsRessource);
-            $informationsRessource->setExerciceId($this);
+        if (!$this->informationsRessources->contains($info)) {
+            $this->informationsRessources->add($info);
+            $info->setExercise($this);
         }
 
         return $this;
     }
 
-    public function removeInformationsRessource(InformationsRessources $informationsRessource): static
+    public function removeInformationsRessource(InformationsRessources $info): static
     {
-        if ($this->informationsRessources->removeElement($informationsRessource)) {
-            // set the owning side to null (unless already changed)
-            if ($informationsRessource->getExerciceId() === $this) {
-                $informationsRessource->setExerciceId(null);
+        if ($this->informationsRessources->removeElement($info)) {
+            if ($info->getExercise() === $this) {
+                $info->setExercise(null);
             }
         }
 
@@ -119,22 +117,21 @@ class Exercises
      */
     public function getRecommendedExercises(): Collection
     {
-        return $this->RecommendedExercises;
+        return $this->recommendedExercises;
     }
 
-    public function addRecommendedExercise(StressDiagnosticResult $recommendedExercise): static
+    public function addRecommendedExercise(StressDiagnosticResult $result): static
     {
-        if (!$this->RecommendedExercises->contains($recommendedExercise)) {
-            $this->RecommendedExercises->add($recommendedExercise);
+        if (!$this->recommendedExercises->contains($result)) {
+            $this->recommendedExercises->add($result);
         }
 
         return $this;
     }
 
-    public function removeRecommendedExercise(StressDiagnosticResult $recommendedExercise): static
+    public function removeRecommendedExercise(StressDiagnosticResult $result): static
     {
-        $this->RecommendedExercises->removeElement($recommendedExercise);
-
+        $this->recommendedExercises->removeElement($result);
         return $this;
     }
 }

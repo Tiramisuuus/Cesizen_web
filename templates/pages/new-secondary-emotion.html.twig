@@ -1,0 +1,39 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/new-secondary-emotion.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="admin-container">
+        <h1 class="admin-title">Ajouter une émotion secondaire</h1>
+
+        {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+
+        <div class="form-group">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {'attr': {'placeholder': 'Nom de l’émotion'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'placeholder': 'Description (optionnelle)'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.score) }}
+            {{ form_widget(form.score, {'attr': {'placeholder': 'Score (ex : 2.5)'}}) }}
+            {{ form_errors(form.score) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Ajouter</button>
+            <a href="{{ path('admin_emotions_index') }}" class="btn-secondary">Annuler</a>
+        </div>
+
+        {{ form_end(form) }}
+    </main>
+{% endblock %}

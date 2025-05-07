@@ -1,0 +1,155 @@
+:root {
+    --violet: #7c3aed;
+    --violet-dark: #5b21b6;
+    --white: #ffffff;
+    --gray-light: #f8f9fc;
+    --gray: #d1d5db;
+    --gray-dark: #6b7280;
+    --text-dark: #1f2937;
+    --error-red: #ef4444;
+    --card-bg: #ffffff;
+    --card-radius: 14px;
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    --input-border: #e5e7eb;
+    --input-bg: #fdfdff;
+    --transition: 0.3s ease;
+    --focus-ring: 0 0 0 4px rgba(124, 58, 237, 0.25);
+}
+
+/* Container */
+.admin-form {
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 2.5rem;
+    max-width: 520px;
+    margin: 2.5rem auto;
+    font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Titre */
+.admin-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--violet);
+    font-family: 'Playfair Display', serif;
+}
+
+/* Groupes de champs */
+.admin-form .form-group {
+    margin-bottom: 1.8rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-form label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="email"],
+.admin-form select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    font-size: 1rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    color: var(--text-dark);
+}
+
+.admin-form input:focus,
+.admin-form select:focus {
+    outline: none;
+    border-color: var(--violet);
+    box-shadow: var(--focus-ring);
+}
+
+/* Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: var(--violet);
+    cursor: pointer;
+}
+
+/* Erreurs */
+.form-global-errors,
+.admin-form .form-error-message,
+.admin-form .form-errors {
+    color: var(--error-red);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    padding-left: 0.4rem;
+}
+
+/* Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.form-actions .btn-primary,
+.form-actions .btn-secondary {
+    padding: 0.65rem 1.4rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.form-actions .btn-primary {
+    background: var(--violet);
+    color: var(--white);
+}
+
+.form-actions .btn-primary:hover {
+    background: var(--violet-dark);
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+.form-actions .btn-secondary {
+    background: var(--gray-light);
+    color: var(--gray-dark);
+}
+
+.form-actions .btn-secondary:hover {
+    background: var(--gray);
+    color: var(--text-dark);
+    transform: translateY(-1.5px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .admin-form { padding: 2rem 1.5rem; }
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Animation douce */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

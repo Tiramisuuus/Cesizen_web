@@ -13,30 +13,35 @@ class StressDiagnosticResult
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 2550, nullable: true)]
-    private ?string $DescriptionResult = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descriptionResult = null;
 
-    #[ORM\Column(length: 2550, nullable: true)]
-    private ?string $Recommandations = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $recommendations = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $DateRealisation = null;
+    private ?\DateTimeInterface $dateRealisation = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?StressDiagnostic $OneToOne = null;
+    #[ORM\OneToOne(
+        targetEntity: StressDiagnostic::class,
+        inversedBy: 'result',
+        cascade: ['persist', 'remove']
+    )]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StressDiagnostic $diagnostic = null;
 
-    /**
-     * @var Collection<int, Exercises>
-     */
-    #[ORM\ManyToMany(targetEntity: Exercises::class, mappedBy: 'RecommendedExercises')]
-    private Collection $ExerciseId;
+    #[ORM\ManyToMany(
+        targetEntity: Exercises::class,
+        mappedBy: 'recommendedExercises'
+    )]
+    private Collection $exercises;
 
     public function __construct()
     {
-        $this->ExerciseId = new ArrayCollection();
+        $this->exercises = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -46,76 +51,70 @@ class StressDiagnosticResult
 
     public function getDescriptionResult(): ?string
     {
-        return $this->DescriptionResult;
+        return $this->descriptionResult;
     }
 
-    public function setDescriptionResult(?string $DescriptionResult): static
+    public function setDescriptionResult(?string $descriptionResult): self
     {
-        $this->DescriptionResult = $DescriptionResult;
-
+        $this->descriptionResult = $descriptionResult;
         return $this;
     }
 
-    public function getRecommandations(): ?string
+    public function getRecommendations(): ?string
     {
-        return $this->Recommandations;
+        return $this->recommendations;
     }
 
-    public function setRecommandations(?string $Recommandations): static
+    public function setRecommendations(?string $recommendations): self
     {
-        $this->Recommandations = $Recommandations;
-
+        $this->recommendations = $recommendations;
         return $this;
     }
 
     public function getDateRealisation(): ?\DateTimeInterface
     {
-        return $this->DateRealisation;
+        return $this->dateRealisation;
     }
 
-    public function setDateRealisation(?\DateTimeInterface $DateRealisation): static
+    public function setDateRealisation(?\DateTimeInterface $dateRealisation): self
     {
-        $this->DateRealisation = $DateRealisation;
-
+        $this->dateRealisation = $dateRealisation;
         return $this;
     }
 
-    public function getOneToOne(): ?StressDiagnostic
+    public function getDiagnostic(): ?StressDiagnostic
     {
-        return $this->OneToOne;
+        return $this->diagnostic;
     }
 
-    public function setOneToOne(?StressDiagnostic $OneToOne): static
+    public function setDiagnostic(StressDiagnostic $diagnostic): self
     {
-        $this->OneToOne = $OneToOne;
-
+        $this->diagnostic = $diagnostic;
         return $this;
     }
 
     /**
      * @return Collection<int, Exercises>
      */
-    public function getExerciseId(): Collection
+    public function getExercises(): Collection
     {
-        return $this->ExerciseId;
+        return $this->exercises;
     }
 
-    public function addExerciseId(Exercises $exerciseId): static
+    public function addExercise(Exercises $exercise): self
     {
-        if (!$this->ExerciseId->contains($exerciseId)) {
-            $this->ExerciseId->add($exerciseId);
-            $exerciseId->addRecommendedExercise($this);
+        if (!$this->exercises->contains($exercise)) {
+            $this->exercises->add($exercise);
+            $exercise->addRecommendedExercise($this);
         }
-
         return $this;
     }
 
-    public function removeExerciseId(Exercises $exerciseId): static
+    public function removeExercise(Exercises $exercise): self
     {
-        if ($this->ExerciseId->removeElement($exerciseId)) {
-            $exerciseId->removeRecommendedExercise($this);
+        if ($this->exercises->removeElement($exercise)) {
+            $exercise->removeRecommendedExercise($this);
         }
-
         return $this;
     }
 }

@@ -1,0 +1,50 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/bo-admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/bo-admin-emotions.css') }}">
+
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="admin-container">
+        <h1 class="admin-title">Gestion des émotions secondaires</h1>
+
+        <div class="admin-actions">
+            <a href="{{ path('admin_emotions_new') }}" class="btn-primary">+ Ajouter une émotion</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for emotion in emotions %}
+                <tr>
+                    <td>{{ emotion.id }}</td>
+                    <td>{{ emotion.name }}</td>
+                    <td>{{ emotion.description|default('–') }}</td>
+                    <td>{{ emotion.score|default('–') }}</td>
+                    <td class="actions-cell">
+                        <a href="{{ path('admin_emotions_edit', {'id': emotion.id}) }}" class="btn-edit" title="Modifier">✏️</a>
+                        <form method="post" action="{{ path('admin_emotions_delete', {'id': emotion.id}) }}" class="inline-form" onsubmit="return confirm('Supprimer cette émotion ?');">
+                            <button type="submit" class="btn-delete" title="Supprimer">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="no-data">Aucune émotion secondaire trouvée.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

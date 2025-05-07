@@ -33,36 +33,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isActive = true;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTimeInterface $createdAt;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $createdAt;
 
-    /**
-     * @var Collection<int, EmotionTracker>
-     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: EmotionTracker::class, orphanRemoval: true)]
     private Collection $emotionTrackers;
 
-    /**
-     * @var Collection<int, EmergencyInformations>
-     */
-    #[ORM\ManyToMany(targetEntity: EmergencyInformations::class)]
+    #[ORM\ManyToMany(
+        targetEntity: EmergencyInformations::class,
+        inversedBy: 'savedByUsers'
+    )]
     #[ORM\JoinTable(name: 'user_saved_emergency')]
     private Collection $savedEmergency;
 
-    /**
-     * @var Collection<int, InformationsRessources>
-     */
-    #[ORM\ManyToMany(targetEntity: InformationsRessources::class)]
+    #[ORM\ManyToMany(
+        targetEntity: InformationsRessources::class,
+        inversedBy: 'favedByUsers'
+    )]
     #[ORM\JoinTable(name: 'user_favorite_resources')]
     private Collection $favoriteResources;
 
     public function __construct()
     {
-        $this->emotionTrackers      = new ArrayCollection();
-        $this->savedEmergency       = new ArrayCollection();
-        $this->favoriteResources     = new ArrayCollection();
-        $this->createdAt            = new \DateTime();
-        $this->isActive             = true;
+        $this->emotionTrackers   = new ArrayCollection();
+        $this->savedEmergency    = new ArrayCollection();
+        $this->favoriteResources = new ArrayCollection();
+        $this->createdAt         = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -75,10 +71,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 
     public function getPassword(): string
@@ -86,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
         return $this;
@@ -97,15 +98,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username;
     }
 
-    public function setUsername(?string $username): static
+    public function setUsername(?string $username): self
     {
         $this->username = $username;
         return $this;
     }
 
-    /**
-     * Retourne le rôle sous forme d'un tableau pour Symfony
-     */
     public function getRoles(): array
     {
         return [$this->role];
@@ -116,7 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(string $role): self
     {
         $this->role = strtoupper($role);
         return $this;
@@ -127,32 +125,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    /**
-     * @return Collection<int, EmotionTracker>
-     */
     public function getEmotionTrackers(): Collection
     {
         return $this->emotionTrackers;
     }
 
-    public function addEmotionTracker(EmotionTracker $tracker): static
+    public function addEmotionTracker(EmotionTracker $tracker): self
     {
         if (!$this->emotionTrackers->contains($tracker)) {
             $this->emotionTrackers->add($tracker);
@@ -161,7 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeEmotionTracker(EmotionTracker $tracker): static
+    public function removeEmotionTracker(EmotionTracker $tracker): self
     {
         if ($this->emotionTrackers->removeElement($tracker)) {
             if ($tracker->getUser() === $this) {
@@ -171,15 +166,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, EmergencyInformations>
-     */
     public function getSavedEmergency(): Collection
     {
         return $this->savedEmergency;
     }
 
-    public function addSavedEmergency(EmergencyInformations $info): static
+    public function addSavedEmergency(EmergencyInformations $info): self
     {
         if (!$this->savedEmergency->contains($info)) {
             $this->savedEmergency->add($info);
@@ -187,21 +179,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeSavedEmergency(EmergencyInformations $info): static
+    public function removeSavedEmergency(EmergencyInformations $info): self
     {
         $this->savedEmergency->removeElement($info);
         return $this;
     }
 
-    /**
-     * @return Collection<int, InformationsRessources>
-     */
     public function getFavoriteResources(): Collection
     {
         return $this->favoriteResources;
     }
 
-    public function addFavoriteResource(InformationsRessources $res): static
+    public function addFavoriteResource(InformationsRessources $res): self
     {
         if (!$this->favoriteResources->contains($res)) {
             $this->favoriteResources->add($res);
@@ -209,19 +198,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeFavoriteResource(InformationsRessources $res): static
+    public function removeFavoriteResource(InformationsRessources $res): self
     {
         $this->favoriteResources->removeElement($res);
         return $this;
     }
 
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
-
     public function eraseCredentials(): void
     {
-        // Si vous aviez des champs temporaires, les nettoyer ici.
+        // Clear temporary data if any
     }
 }

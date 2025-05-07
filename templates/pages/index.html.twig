@@ -1,48 +1,162 @@
-{# templates/pages/index.html.twig #}
-{% extends 'pages/base.html.twig' %}
-
-{% block title %}Cesizen - Accueil{% endblock %}
+{# styles #}
+<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
 
 {% block body %}
-
-
-    {# Feuille de style spécifique à la page #}
-    <link rel="stylesheet" href="{{ asset('styles/pages/index.css') }}">
-
-        {% include 'components/organisms/header.html.twig' %}
+    {% include 'components/organisms/header.html.twig' %}
 
     <div class="section-wrapper">
-        <section>
-            <h2>Lorem ipsum</h2>
-            <p>Sed lectus mi, eleifend quis congue non, lacinia id quam. Cras porta pellentesque nulla, ac auctor ligula scelerisque non. In vel placerat lacus. Nam pretium vitae purus et laoreet. Aliquam erat volutpat. Pellentesque id volutpat sem, et condimentum nisl. Donec bibendum congue mauris, ac commodo tortor volutpat ac. Donec lobortis lorem nisi, sit amet bibendum lacus vestibulum interdum. Donec mollis ligula at semper iaculis.</p>
-            <p>Duis et vestibulum turpis. Duis non ultrices quam. Sed volutpat imperdiet sollicitudin. Aliquam erat volutpat. Donec at adipiscing purus. Duis varius metus vitae mattis pellentesque. Etiam tempor urna sed congue vulputate. Nulla neque metus, vulputate a dui ut, suscipit fringilla risus. Suspendisse posuere dignissim vestibulum. Praesent congue vestibulum dolor, quis lobortis libero egestas ac. Sed venenatis bibendum interdum. Curabitur rhoncus urna quis viverra varius. Cras posuere non tortor at volutpat. Suspendisse porta, turpis at ullamcorper imperdiet, felis lacus eleifend sapien, pulvinar elementum ipsum lacus ut elit. Sed ipsum erat, porttitor non malesuada at, interdum at nibh. Mauris ut ornare purus.</p>
-            <h2>Nulla vitae lacus</h2>
-            <p>Praesent commodo elit vel massa gravida lacinia. Maecenas auctor dignissim porttitor. Donec tincidunt mi eget semper bibendum. Morbi quis sagittis sapien. Fusce ut ligula purus. Nulla tristique augue nec lectus lacinia congue. Nunc tempus eros quam, ac sollicitudin mauris vehicula ac. Vivamus pulvinar elit ac risus placerat rutrum.</p>
-            <p>Magna indoctum erroribus no his, alii fabellas eum an. Et tota clita eleifend eum, pri ne euismod eloquentiam, sea ei quas tibique. Ipsum tamquam cum id, tota clita congue ad usu. Ex eos admodum nominati. Eam ei summo dictas nostrum, vim harum graeco apeirian te. Sensibus persequeris nam an, cu legere oblique tincidunt eos, et soleat vivendum indoctum eos.</p>
-            <p>Donec lobortis porta ipsum a tristique. Integer sit amet ipsum porta, bibendum mauris vitae, ultricies lectus.</p>
+        {# ─── HERO ──────────────────────────────── #}
+        <header class="hero">
+            <div class="hero-content">
+                <h1>Bienvenue sur Cesizen</h1>
+                <p>Votre espace de bien-être mental et émotionnel</p>
+                <a href="/emotion-form" class="btn-primary">Commencer mon suivi</a>
+            </div>
+        </header>
+
+        {# ─── LANDING ALTERNÉE ──────────────────── #}
+        <section class="landing">
+
+            {# bloc 1 #}
+            <article class="landing-row">
+                <div class="landing-img">
+                    <img src="{{ asset('images/1.jpg') }}" alt="Fonctionnement Cesizen">
+                </div>
+                <div class="landing-text">
+                    <h2>Comment fonctionne Cesizen&nbsp;?</h2>
+                    <p>Notez vos émotions chaque jour, visualisez leur évolution et recevez des conseils personnalisés pour rester aligné avec vous-même.</p>
+                </div>
+            </article>
+
+            {# bloc 2 #}
+            <article class="landing-row reverse">
+                <div class="landing-img">
+                    <img src="{{ asset('images/1.jpg') }}" alt="Espace personnel Cesizen">
+                </div>
+                <div class="landing-text">
+                    <h2>Un espace sécurisé et personnel</h2>
+                    <p>Votre espace est confidentiel ; consultez vos statistiques à tout moment et ajustez vos objectifs bien-être.</p>
+                </div>
+            </article>
+
+            {# bloc 3 #}
+            <article class="landing-row">
+                <div class="landing-img">
+                    <img src="{{ asset('images/1.jpg') }}" alt="Accompagnement bienveillant Cesizen">
+                </div>
+                <div class="landing-text">
+                    <h2>Un accompagnement bienveillant</h2>
+                    <p>Respiration guidée, méditations, ressources utiles : choisissez les activités qui vous apaisent, à votre rythme.</p>
+                </div>
+            </article>
+        </section>
+
+        {# ─── RESSOURCES / CARTES ────────────────── #}
+        <section class="resources">
+            <h2>Prendre soin de moi</h2>
+
+            <div class="card-grid">
+                <article class="card">
+                    <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Ressources Cesizen"></div>
+                    <div class="card-body">
+                        <h3>Ressources &amp; Conseils</h3>
+                        <p>Articles et outils pour nourrir votre santé mentale.</p>
+                        <a href="{{ path('information_index') }}" class="card-link">Découvrir</a>
+                    </div>
+                </article>
+                {% set role   = app.request.getSession().get('user_role') %}
+                {% if role == 'ROLE_ADMIN' %}
+                    <article class="card">
+                        <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Profil Cesizen"></div>
+                        <div class="card-body">
+                            <h3>Mon Profil</h3>
+                            <p>Suivez votre progression et vos émotions passées.</p>
+                            <a href="/profile" class="card-link">Voir mon profil</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Déconnexion"></div>
+                        <div class="card-body">
+                            <h3>Déconnexion</h3>
+                            <p>Fermez votre session en toute sécurité.</p>
+                            <a href="{{ path('app_logout') }}" class="card-link">Déconnexion</a>
+                        </div>
+                    </article>
+
+                    {% if app.request.getSession().get('user_id') %}
+                        <article class="card">
+                            <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Back-office"></div>
+                            <div class="card-body">
+                                <h3>Back-office Administrateur</h3>
+                                <p>Gérez les contenus et les utilisateurs.</p>
+                                <a href="/admin/users" class="card-link">Accéder</a>
+                            </div>
+                        </article>
+                    {% endif %}
+                {% else %}
+                    <article class="card">
+                        <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Connexion"></div>
+                        <div class="card-body">
+                            <h3>Connexion</h3>
+                            <p>Retrouvez votre espace personnel.</p>
+                            <a href="{{ path('app_login') }}" class="card-link">Connexion</a>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Inscription"></div>
+                        <div class="card-body">
+                            <h3>Inscription</h3>
+                            <p>Rejoignez Cesizen gratuitement et commencez.</p>
+                            <a href="{{ path('app_register') }}" class="card-link">S’inscrire</a>
+                        </div>
+                    </article>
+                {% endif %}
+            </div>
+        </section>
+
+        {# ─── ACTIVITÉS (mêmes cartes) ────────────── #}
+        <section class="activities">
+            <h2>Activités Bien-être</h2>
+
+            <div class="card-grid">
+                <article class="card">
+                    <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Respiration guidée"></div>
+                    <div class="card-body">
+                        <h3>Exercice de respiration</h3>
+                        <span class="badge">Bientôt</span>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Méditation guidée"></div>
+                    <div class="card-body">
+                        <h3>Méditation guidée</h3>
+                        <span class="badge">Bientôt</span>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-img"><img src="{{ asset('images/1.jpg') }}" alt="Tracker d’émotions"></div>
+                    <div class="card-body">
+                        <h3>Tracker d’émotions</h3>
+                        <a href={{ path('emotions-tracker') }} class="btn-secondary">Commencer</a>
+                    </div>
+                </article>
+            </div>
         </section>
     </div>
-    {# ---- contenu principal de la page ---- #}
-    {# … #}
 
-    {# Footer décoratif étoilé #}
+    {# ─── FOOTER ────────────────────────────────── #}
     {% block footer %}
-        <footer class="dark-starry-footer">
-            <div class="footer-content">
-                <p>
-                    {{ "now"|date("Y") }} • Cesizen •
-                    <a>Mentions légales</a> •
-                    <a>Politique de confidentialité</a> •
-                    <a>Cookies</a>
-                </p>
-                <p>
-                    Conformes au RGPD — Données hébergées dans l’UE — Contact :
-                    <a href="mailto:support@cesizen.app">support@cesizen.app</a>
-                </p>
-            </div>
+        <footer class="zen-footer">
+            <p class="quote">« Le calme intérieur est la clé de toute transformation. »</p>
+            <nav>
+                <a href="/mentions-legales">Mentions légales</a>
+                <a href="/politique-confidentialite">Politique de confidentialité</a>
+            </nav>
+            <p class="small-text">Cesizen • Données sécurisées & hébergées en Europe</p>
         </footer>
     {% endblock %}
-
-
-    <script src="{{ asset('js/header.js') }}" defer></script>
 {% endblock %}

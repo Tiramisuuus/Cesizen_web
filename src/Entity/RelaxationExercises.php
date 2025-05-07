@@ -11,14 +11,17 @@ class RelaxationExercises
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Position = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $position = null;
 
+    /**
+     * Stockage en Blob (audio)
+     */
     #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $AudioFile;
+    private $audioFile;
 
     public function getId(): ?int
     {
@@ -27,24 +30,30 @@ class RelaxationExercises
 
     public function getPosition(): ?string
     {
-        return $this->Position;
+        return $this->position;
     }
 
-    public function setPosition(?string $Position): static
+    public function setPosition(?string $position): static
     {
-        $this->Position = $Position;
+        $this->position = $position;
 
         return $this;
     }
 
+    /**
+     * Retourne le contenu brut du BLOB (ressource ou string)
+     */
     public function getAudioFile()
     {
-        return $this->AudioFile;
+        return $this->audioFile;
     }
 
-    public function setAudioFile($AudioFile): static
+    /**
+     * Reçoit une ressource ou une string brute pour le BLOB
+     */
+    public function setAudioFile($audioFile): static
     {
-        $this->AudioFile = $AudioFile;
+        $this->audioFile = $audioFile;
 
         return $this;
     }

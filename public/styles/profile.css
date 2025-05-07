@@ -1,0 +1,111 @@
+
+:root {
+    --violet-light: #f5ecff;
+    --violet:       #c1a8ff;
+    --violet-dark:  #8460f4;
+    --red:          #e74c3c;
+    --white:        #ffffff;
+    --text-dark:    #2a004f;
+
+    --bg-page:      #faf6ff;
+    --card-bg:      #ffffff;
+    --card-radius:  16px;
+    --card-shadow:  rgba(0, 0, 0, 0.08);
+
+    --gap:          1.5rem;
+    --transition:   0.3s ease;
+
+    --font-sans:    'Inter', sans-serif;
+    --font-serif:   'Playfair Display', serif;
+}
+
+/* Reset & base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-page);
+    color: var(--text-dark);
+}
+
+/* Container centré */
+.profile-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gap);
+}
+
+/* Card */
+.profile-card {
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: 0 6px 24px var(--card-shadow);
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+.profile-title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--violet-dark);
+}
+
+/* Liste d’infos */
+.profile-info {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 2rem;
+}
+.profile-info li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--violet-light);
+    font-size: 1rem;
+}
+.profile-info li strong {
+    color: var(--violet-dark);
+}
+
+/* Actions */
+.profile-actions {
+    display: flex;
+    gap: var(--gap);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.profile-actions .btn-secondary,
+.profile-actions .btn-danger {
+    display: inline-block;
+    padding: 0.7rem 1.4rem;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background var(--transition), transform var(--transition);
+}
+.btn-secondary {
+    background: var(--violet);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(132,96,244,0.2);
+}
+.btn-secondary:hover {
+    background: var(--violet-dark);
+    transform: translateY(-2px);
+}
+.btn-danger {
+    background: var(--red);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(231,76,60,0.2);
+}
+.btn-danger:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .profile-card {
+        padding: 2rem 1rem;
+    }
+}

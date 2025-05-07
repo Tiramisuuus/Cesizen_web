@@ -1,0 +1,31 @@
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="profile-container">
+        <div class="profile-card">
+            <h1 class="profile-title">Mon Profil</h1>
+
+            <ul class="profile-info">
+                <li><strong>Identifiant :</strong> {{ user.id }}</li>
+                <li><strong>Nom d'utilisateur :</strong> {{ user.username ?: '—' }}</li>
+                <li><strong>Email :</strong> {{ user.email }}</li>
+                <li><strong>Rôle :</strong> {{ user.role }}</li>
+                <li><strong>Créé le :</strong> {{ user.createdAt|date('d/m/Y H:i') }}</li>
+                <li><strong>Compte actif :</strong>
+                    {% if user.isActive %} Oui {% else %} Non {% endif %}
+                </li>
+            </ul>
+
+            <div class="profile-actions">
+                <a href="{{ path('app_change_password') }}" class="btn-secondary">Changer de mot de passe</a>
+                <a href="{{ path('app_logout') }}" class="btn-danger">Déconnexion</a>
+            </div>
+        </div>
+    </main>
+{% endblock %}

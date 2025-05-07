@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\ChangePasswordFormType;
+
 
 class SecurityController extends AbstractController
 {
@@ -22,6 +24,56 @@ class SecurityController extends AbstractController
         private EntityManagerInterface       $em
     ) {}
 
+    #[Route('/profile/change-password', name: 'app_change_password')]
+    public function changePassword(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $em,
+        UserRepository $userRepository
+    ): Response {
+        // Récupère l'ID en session
+        $session = $request->getSession();
+        $userId  = $session->get('user_id');
+        if (!$userId) {
+            $this->addFlash('error', 'Vous devez être connecté pour modifier votre mot de passe.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Charge manuellement l'utilisateur
+        $user = $userRepository->find($userId);
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Crée et traite le formulaire
+        $form = $this->createForm(ChangePasswordFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Vérifie le mot de passe actuel
+            $current = $form->get('currentPassword')->getData();
+            if (!$passwordHasher->isPasswordValid($user, $current)) {
+                $form->get('currentPassword')
+                    ->addError(new FormError('Mot de passe actuel incorrect.'));
+            } else {
+                // Récupère et hash le nouveau mot de passe
+                $newPwd = $form->get('newPassword')->getData();
+                $hashed = $passwordHasher->hashPassword($user, $newPwd);
+                $user->setPassword($hashed);
+
+                // Sauvegarde en base
+                $em->flush();
+
+                $this->addFlash('success', 'Votre mot de passe a bien été modifié.');
+                return $this->redirectToRoute('home');
+            }
+        }
+
+        return $this->render('pages/change_password.html.twig', [
+            'changePasswordForm' => $form->createView(),
+        ]);
+    }
     /**
      * Login manuel : cherche l’utilisateur, vérifie le mot de passe,
      * stocke l’ID en session, flash et redirection.
@@ -53,6 +105,7 @@ class SecurityController extends AbstractController
 
             // Succès : on met l’ID en session
             $request->getSession()->set('user_id', $user->getId());
+            $request->getSession()->set('user_role', $user->getRole());
             $this->addFlash('success', 'Connexion réussie !');
 
             // Redirige vers la home (ou dashboard)
@@ -71,6 +124,7 @@ class SecurityController extends AbstractController
     public function logout(Request $request): Response
     {
         $request->getSession()->set('user_id', null);
+        $request->getSession()->set('user_role', null);
         $this->addFlash('success', 'Vous avez été déconnecté.');
         return $this->redirectToRoute('home');
     }
@@ -103,7 +157,7 @@ class SecurityController extends AbstractController
                     // Hash + initialisation des champs
                     $hashed = $this->hasher->hashPassword($user, $raw);
                     $user->setPassword($hashed)
-                        ->setCreatedAt(new \DateTime())
+                        ->setCreatedAt(new \DateTimeImmutable())
                         ->setIsActive(true)
                         ->setRole('ROLE_USER');
 
@@ -111,8 +165,6 @@ class SecurityController extends AbstractController
                     $this->em->persist($user);
                     $this->em->flush();
 
-                    // Stocke l’ID en session
-                    $request->getSession()->set('user_id', $user->getId());
                     $this->addFlash('success', 'Votre compte a bien été créé.');
 
                     // Redirige vers la home (ou où vous voulez)
@@ -124,5 +176,6 @@ class SecurityController extends AbstractController
         return $this->render('pages/register.html.twig', [
             'registerForm' => $form->createView(),
         ]);
+
     }
 }

@@ -1,0 +1,113 @@
+/* new-secondary-emotion.css */
+
+/* Conteneur principal */
+.admin-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Titre */
+.admin-title {
+    font-size: 1.8rem;
+    color: #5e3370; /* violet foncé */
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Formulaire */
+.admin-form .form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-form label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #5e3370;
+}
+
+.admin-form input,
+.admin-form textarea {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: #fafafa;
+    transition: border-color 0.2s ease;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+    border-color: #8e44ad;
+    outline: none;
+    background-color: #fff;
+}
+
+.admin-form .form-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.4rem;
+}
+
+/* Actions (boutons) */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    background-color: #8e44ad;
+    color: #fff;
+    padding: 0.7rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5e3370;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #ddd;
+    color: #333;
+    padding: 0.7rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #bbb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .admin-container {
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions button,
+    .form-actions a {
+        width: 100%;
+        text-align: center;
+    }
+}

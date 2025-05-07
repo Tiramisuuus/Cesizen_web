@@ -12,30 +12,45 @@ class InformationsRessources
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(length: 2550, nullable: true)]
-    private ?string $Content = null;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $content = null;
 
-    #[ORM\ManyToOne(inversedBy: 'informationsRessources')]
-    private ?Exercises $ExerciceId = null;
+    #[ORM\ManyToOne(targetEntity: Exercises::class, inversedBy: 'informationsRessources')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Exercises $exercise = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Favorite')]
-    private Collection $faveByUserId;
+    #[ORM\ManyToMany(
+        targetEntity: User::class,
+        mappedBy: 'favoriteResources'
+    )]
+    private Collection $favedByUsers;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $author = null;
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+        return $this;
+    }
     public function __construct()
     {
-        $this->faveByUserId = new ArrayCollection();
+        $this->favedByUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,74 +60,70 @@ class InformationsRessources
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(?string $Name): static
+    public function setName(?string $name): self
     {
-        $this->Name = $Name;
-
+        $this->name = $name;
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
-
+        $this->description = $description;
         return $this;
     }
 
     public function getContent(): ?string
     {
-        return $this->Content;
+        return $this->content;
     }
 
-    public function setContent(?string $Content): static
+    public function setContent(?string $content): self
     {
-        $this->Content = $Content;
-
+        $this->content = $content;
         return $this;
     }
 
-    public function getExerciceId(): ?Exercises
+    public function getExercise(): ?Exercises
     {
-        return $this->ExerciceId;
+        return $this->exercise;
     }
 
-    public function setExerciceId(?Exercises $ExerciceId): static
+    public function setExercise(?Exercises $exercise): self
     {
-        $this->ExerciceId = $ExerciceId;
-
+        $this->exercise = $exercise;
         return $this;
     }
 
     /**
      * @return Collection<int, User>
      */
-    public function getFaveByUserId(): Collection
+    public function getFavedByUsers(): Collection
     {
-        return $this->faveByUserId;
+        return $this->favedByUsers;
     }
 
-    public function addFaveByUserId(User $faveByUserId): static
+    public function addFavedByUser(User $user): self
     {
-        if (!$this->faveByUserId->contains($faveByUserId)) {
-            $this->faveByUserId->add($faveByUserId);
-            $faveByUserId->addFavorite($this);
+        if (!$this->favedByUsers->contains($user)) {
+            $this->favedByUsers->add($user);
+            $user->addFavoriteResource($this);
         }
 
         return $this;
     }
 
-    public function removeFaveByUserId(User $faveByUserId): static
+    public function removeFavedByUser(User $user): self
     {
-        if ($this->faveByUserId->removeElement($faveByUserId)) {
-            $faveByUserId->removeFavorite($this);
+        if ($this->favedByUsers->removeElement($user)) {
+            $user->removeFavoriteResource($this);
         }
 
         return $this;

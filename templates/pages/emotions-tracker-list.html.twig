@@ -1,0 +1,64 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/emotions-tracker-list.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="tracker-list-container">
+        <h1 class="tracker-title">Mes émotions enregistrées</h1>
+
+        <section class="filters">
+            <form method="get" class="filters-form">
+                <input type="text" name="search" placeholder="Recherche par titre ou description" value="{{ app.request.get('search') }}">
+
+                <select name="emotion">
+                    <option value="">Toutes les émotions</option>
+                    {% for emotion in allEmotions %}
+                        <option value="{{ emotion.id }}" {{ emotion.id == app.request.get('emotion') ? 'selected' : '' }}>
+                            {{ emotion.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="date" name="date" value="{{ app.request.get('date') }}">
+
+                <button type="submit" class="btn-filter">Filtrer</button>
+            </form>
+        </section>
+
+        {% if trackers is empty %}
+            <p class="no-trackers">Aucun traqueur trouvé pour l’instant.</p>
+        {% else %}
+            <section class="trackers-list">
+                {% for tracker in trackers %}
+                    <article class="tracker-card">
+                        <header>
+                            <h2>{{ tracker.name ?: 'Sans titre' }}</h2>
+                            <span class="score">Score : {{ tracker.score|default('–') }}/10</span>
+                        </header>
+
+                        <p class="desc">{{ tracker.description|default('Aucune description') }}</p>
+
+                        <div class="emotions">
+                            {% for emo in tracker.secondaryEmotions %}
+                                <span class="tag">{{ emo.name }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <footer>
+                            <span class="date">{{ tracker.createdAt|date('d/m/Y') }}</span>
+                            <div class="actions">
+                                <a href="{{ path('emotions-tracker-edit', {'id': tracker.id}) }}" class="btn-edit">✏️</a>
+                                <form method="post" action="{{ path('emotions-tracker-delete', {'id': tracker.id}) }}" onsubmit="return confirm('Supprimer ce traqueur ?');">
+                                    <button class="btn-delete" type="submit">🗑️</button>
+                                </form>
+                            </div>
+                        </footer>
+                    </article>
+                {% endfor %}
+            </section>
+        {% endif %}
+    </main>
+{% endblock %}

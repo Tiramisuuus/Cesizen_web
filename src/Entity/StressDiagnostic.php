@@ -11,23 +11,24 @@ class StressDiagnostic
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Title = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $title = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $DateRealisation = null;
+    private ?\DateTimeInterface $dateRealisation = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $Score = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $score = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $UserId = null;
+    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -36,61 +37,56 @@ class StressDiagnostic
 
     public function getTitle(): ?string
     {
-        return $this->Title;
+        return $this->title;
     }
 
-    public function setTitle(?string $Title): static
+    public function setTitle(?string $title): self
     {
-        $this->Title = $Title;
-
+        $this->title = $title;
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
-
+        $this->description = $description;
         return $this;
     }
 
     public function getDateRealisation(): ?\DateTimeInterface
     {
-        return $this->DateRealisation;
+        return $this->dateRealisation;
     }
 
-    public function setDateRealisation(\DateTimeInterface $DateRealisation): static
+    public function setDateRealisation(\DateTimeInterface $dateRealisation): self
     {
-        $this->DateRealisation = $DateRealisation;
-
+        $this->dateRealisation = $dateRealisation;
         return $this;
     }
 
     public function getScore(): ?float
     {
-        return $this->Score;
+        return $this->score;
     }
 
-    public function setScore(?float $Score): static
+    public function setScore(?float $score): self
     {
-        $this->Score = $Score;
-
+        $this->score = $score;
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->UserId;
+        return $this->user;
     }
 
-    public function setUserId(?User $UserId): static
+    public function setUser(User $user): self
     {
-        $this->UserId = $UserId;
-
+        $this->user = $user;
         return $this;
     }
 }

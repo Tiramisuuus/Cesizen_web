@@ -6,36 +6,42 @@ use App\Repository\EmergencyInformationsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: EmergencyInformationsRepository::class)]
 class EmergencyInformations
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(length: 2550, nullable: true)]
-    private ?string $Content = null;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $content = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $EmergencyPhoneNumber = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $emergencyPhoneNumber = null;
 
     /**
+     * Utilisateurs ayant enregistré cette urgence
+     *
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Saved')]
-    private Collection $SavedByUserId;
+    #[ORM\ManyToMany(
+        targetEntity: User::class,
+        mappedBy: 'savedEmergency'
+    )]
+    private Collection $savedByUsers;
 
     public function __construct()
     {
-        $this->SavedByUserId = new ArrayCollection();
+        $this->savedByUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,48 +51,48 @@ class EmergencyInformations
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(?string $Name): static
+    public function setName(?string $name): self
     {
-        $this->Name = $Name;
+        $this->name = $name;
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
+        $this->description = $description;
 
         return $this;
     }
 
     public function getContent(): ?string
     {
-        return $this->Content;
+        return $this->content;
     }
 
-    public function setContent(?string $Content): static
+    public function setContent(?string $content): self
     {
-        $this->Content = $Content;
+        $this->content = $content;
 
         return $this;
     }
 
     public function getEmergencyPhoneNumber(): ?string
     {
-        return $this->EmergencyPhoneNumber;
+        return $this->emergencyPhoneNumber;
     }
 
-    public function setEmergencyPhoneNumber(?string $EmergencyPhoneNumber): static
+    public function setEmergencyPhoneNumber(?string $emergencyPhoneNumber): self
     {
-        $this->EmergencyPhoneNumber = $EmergencyPhoneNumber;
+        $this->emergencyPhoneNumber = $emergencyPhoneNumber;
 
         return $this;
     }
@@ -94,25 +100,25 @@ class EmergencyInformations
     /**
      * @return Collection<int, User>
      */
-    public function getSavedByUserId(): Collection
+    public function getSavedByUsers(): Collection
     {
-        return $this->SavedByUserId;
+        return $this->savedByUsers;
     }
 
-    public function addSavedByUserId(User $savedByUserId): static
+    public function addSavedByUser(User $user): self
     {
-        if (!$this->SavedByUserId->contains($savedByUserId)) {
-            $this->SavedByUserId->add($savedByUserId);
-            $savedByUserId->addSaved($this);
+        if (!$this->savedByUsers->contains($user)) {
+            $this->savedByUsers->add($user);
+            $user->addSavedEmergency($this);
         }
 
         return $this;
     }
 
-    public function removeSavedByUserId(User $savedByUserId): static
+    public function removeSavedByUser(User $user): self
     {
-        if ($this->SavedByUserId->removeElement($savedByUserId)) {
-            $savedByUserId->removeSaved($this);
+        if ($this->savedByUsers->removeElement($user)) {
+            $user->removeSavedEmergency($this);
         }
 
         return $this;

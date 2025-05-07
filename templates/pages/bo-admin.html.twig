@@ -1,0 +1,58 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/bo-admin.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="admin-container">
+        <h1 class="admin-title">Gestion des utilisateurs</h1>
+
+        <div class="admin-actions">
+            <a href="{{ path('admin_emotions_index') }}" class="btn-secondary">🎭 Gérer les émotions</a>
+            <a href="{{ path('admin_users_new') }}" class="btn-primary">+ Nouvel utilisateur</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Actif ?</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr class="{{ user.isActive ? '' : 'row-inactive' }}">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username ?: '–' }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.isActive ? 'Oui' : 'Non' }}</td>
+                    <td class="actions-cell">
+                        <a href="{{ path('admin_users_edit', {'id':user.id}) }}" class="btn-edit" title="Éditer">✏️</a>
+                        <form method="post" action="{{ path('admin_users_toggle', {'id':user.id}) }}" class="inline-form">
+                            <button type="submit" class="btn-toggle" title="{{ user.isActive ? 'Désactiver' : 'Activer' }}">
+                                {{ user.isActive ? '🚫' : '✅' }}
+                            </button>
+                        </form>
+                        <form
+                                method="post"
+                                action="{{ path('admin_users_delete', {'id': user.id}) }}"
+                                class="inline-form"
+                                onsubmit="return confirm('Supprimer définitivement ?');"
+                        >
+                            <button type="submit" class="btn-delete" title="Supprimer">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="no-data">Aucun utilisateur trouvé.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

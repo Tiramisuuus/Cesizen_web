@@ -1,0 +1,138 @@
+
+/* Container général */
+.tracker-list-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Titre principal */
+.tracker-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #8460f4;
+    margin-bottom: 2rem;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Filtres */
+.filters-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: space-between;
+    align-items: center;
+}
+.filters-form input[type="text"],
+.filters-form input[type="date"],
+.filters-form select {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.filters-form .btn-filter {
+    background: #8460f4;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+.filters-form .btn-filter:hover {
+    background: #4b0082;
+}
+
+/* Liste des trackers */
+.trackers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.tracker-card {
+    background: #fdfdff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease;
+}
+.tracker-card:hover {
+    transform: translateY(-3px);
+}
+.tracker-card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.tracker-card .score {
+    background: #d8ccff;
+    color: #4b0082;
+    font-weight: bold;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+.tracker-card .desc {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Tags d'émotions */
+.emotions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+.tag {
+    background: #e9e1ff;
+    color: #4b0082;
+    padding: 0.3rem 0.6rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Footer */
+.tracker-card footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tracker-card .date {
+    font-size: 0.85rem;
+    color: #777;
+}
+.tracker-card .actions {
+    display: flex;
+    gap: 0.5rem;
+}
+.tracker-card .btn-edit,
+.tracker-card .btn-delete {
+    font-size: 1.1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.btn-edit:hover {
+    color: #4b0082;
+}
+.btn-delete:hover {
+    color: #e74c3c;
+}
+
+/* Aucune donnée */
+.no-trackers {
+    text-align: center;
+    color: #888;
+    font-size: 1rem;
+    padding: 2rem;
+}

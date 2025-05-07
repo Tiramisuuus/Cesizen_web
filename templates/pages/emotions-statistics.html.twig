@@ -1,0 +1,84 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/emotions-statistics.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+    {% include 'components/organisms/header.html.twig' %}
+
+    <main class="stats-container">
+        <h1 class="stats-title">Statistiques émotionnelles</h1>
+
+        <section class="filters">
+            <form method="get" class="filters-form">
+                <label for="period">Période :</label>
+                <select name="period" id="period" onchange="this.form.submit()">
+                    <option value="7" {% if selectedPeriod == 7 %}selected{% endif %}>7 jours</option>
+                    <option value="30" {% if selectedPeriod == 30 %}selected{% endif %}>30 jours</option>
+                    <option value="90" {% if selectedPeriod == 90 %}selected{% endif %}>3 mois</option>
+                    <option value="365" {% if selectedPeriod == 365 %}selected{% endif %}>1 an</option>
+                </select>
+            </form>
+        </section>
+
+        <section class="chart-section">
+            <h2>Évolution de mon score émotionnel</h2>
+            <canvas id="scoreChart"></canvas>
+        </section>
+
+        <section class="top-emotions">
+            <h2>Émotions les plus fréquentes</h2>
+            <ul>
+                {% for emotion, count in topEmotions %}
+                    <li>{{ emotion }} – {{ count }} fois</li>
+                {% else %}
+                    <li>Aucune donnée disponible.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        const scoreChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|json_encode|raw }},
+                datasets: [{
+                    label: 'Score émotionnel',
+                    data: {{ scores|json_encode|raw }},
+                    fill: false,
+                    borderColor: '#8460f4',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Score'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

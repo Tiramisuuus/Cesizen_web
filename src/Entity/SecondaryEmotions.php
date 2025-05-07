@@ -12,27 +12,43 @@ class SecondaryEmotions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Name = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $Description = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $Score = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $score = null;
 
     /**
      * @var Collection<int, EmotionTracker>
      */
-    #[ORM\ManyToMany(targetEntity: EmotionTracker::class, mappedBy: 'SummedScore')]
-    private Collection $EmotionTrackerId;
+    #[ORM\ManyToMany(targetEntity: EmotionTracker::class, mappedBy: 'secondaryEmotions')]
+    private Collection $emotionTrackers;
+
+    #[ORM\ManyToOne(targetEntity: PrimaryEmotions::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PrimaryEmotions $primaryEmotion = null;
+
+    public function getPrimaryEmotion(): ?PrimaryEmotions
+    {
+        return $this->primaryEmotion;
+    }
+
+    public function setPrimaryEmotion(?PrimaryEmotions $primaryEmotion): self
+    {
+        $this->primaryEmotion = $primaryEmotion;
+        return $this;
+    }
+
 
     public function __construct()
     {
-        $this->EmotionTrackerId = new ArrayCollection();
+        $this->emotionTrackers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -42,36 +58,36 @@ class SecondaryEmotions
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(?string $Name): static
+    public function setName(?string $name): self
     {
-        $this->Name = $Name;
+        $this->name = $name;
 
         return $this;
     }
 
     public function getDescription(): ?string
     {
-        return $this->Description;
+        return $this->description;
     }
 
-    public function setDescription(?string $Description): static
+    public function setDescription(?string $description): self
     {
-        $this->Description = $Description;
+        $this->description = $description;
 
         return $this;
     }
 
     public function getScore(): ?float
     {
-        return $this->Score;
+        return $this->score;
     }
 
-    public function setScore(?float $Score): static
+    public function setScore(?float $score): self
     {
-        $this->Score = $Score;
+        $this->score = $score;
 
         return $this;
     }
@@ -79,25 +95,25 @@ class SecondaryEmotions
     /**
      * @return Collection<int, EmotionTracker>
      */
-    public function getEmotionTrackerId(): Collection
+    public function getEmotionTrackers(): Collection
     {
-        return $this->EmotionTrackerId;
+        return $this->emotionTrackers;
     }
 
-    public function addEmotionTrackerId(EmotionTracker $emotionTrackerId): static
+    public function addEmotionTracker(EmotionTracker $tracker): self
     {
-        if (!$this->EmotionTrackerId->contains($emotionTrackerId)) {
-            $this->EmotionTrackerId->add($emotionTrackerId);
-            $emotionTrackerId->addSummedScore($this);
+        if (!$this->emotionTrackers->contains($tracker)) {
+            $this->emotionTrackers->add($tracker);
+            $tracker->addSecondaryEmotion($this);
         }
 
         return $this;
     }
 
-    public function removeEmotionTrackerId(EmotionTracker $emotionTrackerId): static
+    public function removeEmotionTracker(EmotionTracker $tracker): self
     {
-        if ($this->EmotionTrackerId->removeElement($emotionTrackerId)) {
-            $emotionTrackerId->removeSummedScore($this);
+        if ($this->emotionTrackers->removeElement($tracker)) {
+            $tracker->removeSecondaryEmotion($this);
         }
 
         return $this;

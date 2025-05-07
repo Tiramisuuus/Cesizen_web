@@ -1,0 +1,378 @@
+/* ───────────────────────────────────────────
+   IMPORT GOOGLE FONTS
+──────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Playfair+Display:wght@600;700&display=swap');
+
+/* ───────────────────────────────────────────
+   VARIABLES & RESET
+──────────────────────────────────────────── */
+:root{
+    --font-body:'Nunito', sans-serif;
+    --font-heading:'Playfair Display', serif;
+
+    --violet-50:#f5f1ff;
+    --violet-100:#e5d9ff;
+    --violet-300:#c1a8ff;
+    --violet-500:#9b6bff;
+    --violet-700:#6a00f4;
+    --violet-900:#4b0082;
+
+    --bg-grad:linear-gradient(0deg,var(--violet-50) 0%,#fff 80%);
+    --shadow-s:0 4px 12px rgba(146,83,255,.08);
+    --shadow-m:0 10px 24px rgba(146,83,255,.12);
+    --radius:22px;
+    --speed:.35s cubic-bezier(.25,.8,.3,1);
+    --gap:1.8rem;
+    --max:1200px;
+    --text:#2a004f;
+}
+
+*,*::before,*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-grad);
+    color: var(--violet-900);
+    line-height: 1.6;
+}
+
+/* ───────────────────────────────────────────
+   WRAPPER
+──────────────────────────────────────────── */
+.section-wrapper {
+    max-width: var(--max);
+    margin: auto;
+    padding: 0 1.2rem;
+}
+
+/* ──────────────────────────────────────────
+   HERO FULL-WIDTH & ANIMATIONS
+─────────────────────────────────────────── */
+.hero {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 80vh;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    perspective: 800px;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    background: linear-gradient(135deg, #e0d0ff, #f0e8ff);
+}
+
+/* Background animé multi-couches */
+.hero::before,
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: conic-gradient(from 180deg at 50% 50%, rgba(155,107,255,0.2), rgba(106,0,244,0.2), rgba(155,107,255,0.2));
+    animation: rotateConic 20s linear infinite;
+    opacity: 0.4;
+}
+
+.hero::after {
+    background: radial-gradient(circle at 50% 50%, rgba(183,138,255,0.15), transparent 70%);
+    animation: pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes rotateConic {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@keyframes pulse {
+    from { transform: scale(1); }
+    to   { transform: scale(1.3); }
+}
+
+/* Contenu centré en 3D */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    transform: translateZ(40px);
+}
+.hero-content h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem,8vw,5rem);
+    color: var(--violet-dark);
+    transform: translateZ(60px);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+.hero-content p {
+    font-size: clamp(1.2rem,2.5vw,1.6rem);
+    color: var(--violet-700);
+    margin: 1rem 0 2rem;
+    transform: translateZ(50px);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+}
+
+/* Bouton stylé & transition 3D */
+.btn-primary {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    padding: .9rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--violet-500);
+    border-radius: 50px;
+    box-shadow: 0 8px 20px rgba(106,0,244,0.3);
+    transform: translateZ(40px);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.9s forwards;
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+.btn-primary:hover {
+    transform: translateZ(60px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(106,0,244,0.5);
+}
+
+/* Animations générales */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px) translateZ(0); }
+    to   { opacity: 1; transform: translateY(0) translateZ(0); }
+}
+
+/* ───────────────────────────────────────────
+   LANDING ALTERNÉE
+──────────────────────────────────────────── */
+.landing {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    margin: 4rem 0;
+}
+
+.landing-row {
+    display: grid;
+    gap: var(--gap);
+    align-items: center;
+    text-align: center;
+    animation: fadeIn .8s;
+}
+
+.landing-row.reverse {
+    direction: rtl;
+}
+.landing-row.reverse > * {
+    direction: ltr;
+}
+
+.landing-img {
+    justify-self: center;
+    max-width: 480px;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-s);
+}
+
+.landing-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.landing-text {
+    font-family: var(--font-body);
+}
+
+.landing-text h2 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--violet-700);
+    margin-bottom: .6rem;
+}
+
+.landing-text p {
+    font-size: 1rem;
+    color: #555;
+    max-width: 600px;
+    margin: auto;
+    line-height: 1.75;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .landing-row {
+        grid-template-columns: repeat(2,1fr);
+        text-align: left;
+    }
+}
+
+/* ───────────────────────────────────────────
+   CARTES (Ressources & Activités)
+──────────────────────────────────────────── */
+.card-grid {
+    display: grid;
+    gap: var(--gap);
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-s);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: var(--speed);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-m);
+    transform: translateY(-6px);
+}
+
+.card-img {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+}
+
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.2rem;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+.card h3 {
+    font-family: var(--font-heading);
+    color: var(--violet-700);
+}
+
+.card p {
+    color: #666;
+    font-size: .95rem;
+    flex: 1;
+}
+
+/* Boutons */
+.card-link,
+.btn-secondary {
+    display: inline-block;
+    padding: .5rem 1.3rem;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--speed);
+}
+
+.card-link {
+    background: var(--violet-700);
+    color: #fff;
+}
+
+.card-link:hover {
+    background: var(--violet-500);
+}
+
+.btn-secondary {
+    background: var(--violet-100);
+    color: var(--violet-900);
+}
+
+.btn-secondary:hover {
+    background: var(--violet-500);
+    color: #fff;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    background: var(--violet-50);
+    color: var(--violet-700);
+    padding: .3rem .8rem;
+    border-radius: 20px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+/* Titres de section */
+.resources h2,
+.activities h2 {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--violet-700);
+    margin: 3.5rem 0 2rem;
+}
+
+/* ───────────────────────────────────────────
+   FOOTER
+──────────────────────────────────────────── */
+.zen-footer {
+    background: var(--violet-50);
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--violet-900);
+    border-top-left-radius: 60px;
+    border-top-right-radius: 60px;
+    box-shadow: 0 -6px 18px rgba(146,83,255,.12);
+    margin-top: 5rem;
+}
+
+.zen-footer nav a {
+    color: var(--violet-700);
+    margin: 0 .6rem;
+    text-decoration: none;
+}
+
+.zen-footer nav a:hover {
+    text-decoration: underline;
+}
+
+.quote {
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.small-text {
+    font-size: .8rem;
+    color: #666;
+    margin-top: 1rem;
+}
+
+/* ───────────────────────────────────────────
+   ANIMATION
+──────────────────────────────────────────── */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    100% {
+        opacity: 1;
+    }
+}

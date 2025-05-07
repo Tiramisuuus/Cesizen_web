@@ -10,17 +10,17 @@ class RespirationExercises
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $InspirationDuration = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $inspirationDuration = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $ApneaDuration = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $apneaDuration = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $AirExhalationDuration = null;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $airExhalationDuration = null;
 
     public function getId(): ?int
     {
@@ -29,36 +29,36 @@ class RespirationExercises
 
     public function getInspirationDuration(): ?float
     {
-        return $this->InspirationDuration;
+        return $this->inspirationDuration;
     }
 
-    public function setInspirationDuration(?float $InspirationDuration): static
+    public function setInspirationDuration(?float $inspirationDuration): self
     {
-        $this->InspirationDuration = $InspirationDuration;
+        $this->inspirationDuration = $inspirationDuration;
 
         return $this;
     }
 
     public function getApneaDuration(): ?float
     {
-        return $this->ApneaDuration;
+        return $this->apneaDuration;
     }
 
-    public function setApneaDuration(?float $ApneaDuration): static
+    public function setApneaDuration(?float $apneaDuration): self
     {
-        $this->ApneaDuration = $ApneaDuration;
+        $this->apneaDuration = $apneaDuration;
 
         return $this;
     }
 
     public function getAirExhalationDuration(): ?float
     {
-        return $this->AirExhalationDuration;
+        return $this->airExhalationDuration;
     }
 
-    public function setAirExhalationDuration(?float $AirExhalationDuration): static
+    public function setAirExhalationDuration(?float $airExhalationDuration): self
     {
-        $this->AirExhalationDuration = $AirExhalationDuration;
+        $this->airExhalationDuration = $airExhalationDuration;
 
         return $this;
     }
