@@ -1,4 +1,3 @@
-
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/emotions-tracker.css') }}">
 {% endblock %}
@@ -8,49 +7,40 @@
 
     <main class="tracker-container">
         <h1 class="tracker-title">Traqueur d’émotions</h1>
-        <p class="tracker-subtitle">Exprime ce que tu ressens aujourd’hui.</p>
+        <p class="tracker-subtitle">Décris ton ressenti du jour et sélectionne les émotions associées.</p>
 
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-{{ label }}">{{ message }}</div>
-            {% endfor %}
-        {% endfor %}
+
 
         {{ form_start(form, {'attr': {'class': 'emotion-form'}}) }}
 
         <div class="form-group">
             {{ form_label(form.name) }}
-            {{ form_widget(form.name, {'attr': {'placeholder': 'Titre de ce ressenti'}}) }}
+            {{ form_widget(form.name, {'attr': {'placeholder': 'Ex : Une journée mouvementée'}}) }}
             {{ form_errors(form.name) }}
         </div>
 
         <div class="form-group">
             {{ form_label(form.description) }}
-            {{ form_widget(form.description, {'attr': {'placeholder': 'Décris ce que tu ressens...'}}) }}
+            {{ form_widget(form.description, {'attr': {'placeholder': 'Exprime librement ce que tu ressens...'}}) }}
             {{ form_errors(form.description) }}
         </div>
 
-        <div class="form-group">
-            {{ form_label(form.score) }}
-            <div class="range-wrapper">
-                {{ form_widget(form.score) }}
-                <span id="range-value">5</span>
-            </div>
-            {{ form_errors(form.score) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.secondaryEmotions) }}
-            <div class="checkbox-grid">
-                {{ form_widget(form.secondaryEmotions) }}
-            </div>
-            {{ form_errors(form.secondaryEmotions) }}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.adviceGiven) }}
-            {{ form_widget(form.adviceGiven, {'attr': {'placeholder': 'Un conseil ? Une note personnelle ?'}}) }}
-            {{ form_errors(form.adviceGiven) }}
+        <div class="form-group emotion-select-columns">
+            {% for primary in primaryGroups %}
+                {% if primary.secondaryEmotions|length > 0 %}
+                    <div class="emotion-column">
+                        <h3 class="primary-label">{{ primary.name }}</h3>
+                        <div class="checkbox-column">
+                            {% for emotion in primary.secondaryEmotions %}
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="secondaryEmotions[]" value="{{ emotion.id }}">
+                                    {{ emotion.name }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
 
         <div class="form-actions">
@@ -59,19 +49,4 @@
 
         {{ form_end(form) }}
     </main>
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const range = document.querySelector('input[type="range"]');
-            const display = document.getElementById('range-value');
-            if (range && display) {
-                display.textContent = range.value;
-                range.addEventListener('input', () => {
-                    display.textContent = range.value;
-                });
-            }
-        });
-    </script>
 {% endblock %}
