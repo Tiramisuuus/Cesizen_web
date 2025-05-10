@@ -6,40 +6,35 @@
     {% include 'components/organisms/header.html.twig' %}
 
     <main class="tracker-list-container">
-        <h1 class="tracker-title">Mes émotions enregistrées</h1>
+        <div class="tracker-list-header">
+            <h1 class="tracker-title">Mes émotions enregistrées</h1>
+            <a href="{{ path('emotions-stats') }}" class="btn-stats">📊 Voir mes statistiques</a>
+        </div>
 
         <section class="filters">
             <form method="get" class="filters-form" id="tracker-filter-form">
                 <input
                         type="text"
+                        id="search-input"
                         name="search"
-                        placeholder="Recherche par titre ou description"
+                        placeholder="Recherche par titre, description ou émotion"
                         value="{{ app.request.get('search') }}"
                 >
 
-                <select name="emotion">
-                    <option value="">Toutes les émotions</option>
-                    {% for emotion in allEmotions %}
-                        <option value="{{ emotion.id }}" {{ app.request.get('emotion') == emotion.id ? 'selected' : '' }}>
-                            {{ emotion.name }}
-                        </option>
-                    {% endfor %}
-                </select>
 
-                <input
-                        type="date"
-                        name="date"
-                        value="{{ app.request.get('date') }}"
-                >
             </form>
         </section>
 
         {% if trackers is empty %}
             <p class="no-trackers">Aucun traqueur trouvé pour l’instant.</p>
         {% else %}
-            <section class="trackers-list">
+            <section class="trackers-list" id="trackers-list">
                 {% for tracker in trackers %}
-                    <article class="tracker-card">
+                    <article class="tracker-card"
+                             data-title="{{ tracker.name|lower }}"
+                             data-description="{{ tracker.description|lower }}"
+                             data-emotions="{% for e in tracker.secondaryEmotions %}{{ e.name|lower }} {% endfor %}"
+                    >
                         <header class="tracker-header">
                             <h2>{{ tracker.name ?: 'Sans titre' }}</h2>
                         </header>
@@ -55,11 +50,8 @@
                         </div>
 
                         <footer class="tracker-footer">
-
                             <div class="actions">
-                                <a href="{{ path('emotions-tracker-edit', {'id': tracker.id}) }}" class="btn-edit" title="Modifier">
-                                    ✏️
-                                </a>
+                                <a href="{{ path('emotions-tracker-edit', {'id': tracker.id}) }}" class="btn-edit" title="Modifier">✏️</a>
                                 <form method="post" action="{{ path('emotions-tracker-delete', {'id': tracker.id}) }}" onsubmit="return confirm('Supprimer ce traqueur ?');">
                                     <button type="submit" class="btn-delete" title="Supprimer">🗑️</button>
                                 </form>
@@ -76,18 +68,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('tracker-filter-form');
-            const inputs = form.querySelectorAll('input, select');
+            const searchInput = document.getElementById('search-input');
+            const cards = document.querySelectorAll('.tracker-card');
 
-            inputs.forEach(el => {
-                el.addEventListener('change', () => form.submit());
+            form.querySelector('select').addEventListener('change', () => form.submit());
 
-                if (el.type === 'text') {
-                    let timeout;
-                    el.addEventListener('input', () => {
-                        clearTimeout(timeout);
-                        timeout = setTimeout(() => form.submit(), 500);
-                    });
-                }
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.trim().toLowerCase();
+                cards.forEach(card => {
+                    const t = card.dataset.title || '';
+                    const d = card.dataset.description || '';
+                    const e = card.dataset.emotions || '';
+                    const match = t.includes(q) || d.includes(q) || e.includes(q);
+                    card.style.display = match ? 'block' : 'none';
+                });
             });
         });
     </script>

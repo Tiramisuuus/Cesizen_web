@@ -164,3 +164,24 @@
         gap: 0.5rem;
     }
 }
+.tracker-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn-stats {
+    background: #8460f4;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(132, 96, 244, 0.2);
+}
+.btn-stats:hover {
+    background: #4b0082;
+    transform: translateY(-2px);
+}

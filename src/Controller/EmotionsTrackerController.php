@@ -55,7 +55,7 @@ class EmotionsTrackerController extends AbstractController
                     }
                 }
             }
-
+            $tracker->setCreatedAt(new \DateTimeImmutable());
             $em->persist($tracker);
             $em->flush();
 
@@ -105,12 +105,53 @@ class EmotionsTrackerController extends AbstractController
         }
 
         $user = $em->getRepository(User::class)->find($userId);
-        $trackers = $repo->findBy(['user' => $user]);
+        $selectedPeriod = (int) $request->query->get('period', 30);
+
+        $sinceDate = (new \DateTimeImmutable())->modify("-$selectedPeriod days");
+        $trackers = $repo->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->andWhere('t.createdAt >= :since')
+            ->setParameter('user', $user)
+            ->setParameter('since', $sinceDate)
+            ->orderBy('t.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $dates = [];
+        $scores = [];
+
+        foreach ($trackers as $tracker) {
+            if ($tracker->getScore() !== null) {
+                $dates[] = $tracker->getCreatedAt()->format('d/m');
+                $scores[] = $tracker->getScore();
+            }
+        }
+
+        // Calcul des émotions les plus fréquentes
+        $emotionCount = [];
+        foreach ($trackers as $tracker) {
+            foreach ($tracker->getSecondaryEmotions() as $emotion) {
+                $label = $emotion->getName();
+                $emotionCount[$label] = ($emotionCount[$label] ?? 0) + 1;
+            }
+        }
+
+        arsort($emotionCount);
+        $emotionLabels = array_keys($emotionCount);
+        $emotionValues = array_values($emotionCount);
 
         return $this->render('pages/emotions-statistics.html.twig', [
             'trackers' => $trackers,
+            'dates' => $dates,
+            'scores' => $scores,
+            'topEmotions' => $emotionCount,
+            'emotionLabels' => $emotionLabels,
+            'emotionValues' => $emotionValues,
+            'selectedPeriod' => $selectedPeriod,
         ]);
+
     }
+
     #[Route('/traqueur/{id}/modifier', name: 'emotions-tracker-edit')]
     public function editEmotionTracker(
         int $id,

@@ -1,18 +1,27 @@
+:root {
+    --violet: #8460f4;
+    --violet-dark: #4b0082;
+    --white: #ffffff;
+    --light-bg: #faf9ff;
+    --gray-light: #eee;
+    --gray-dark: #333;
+    --shadow: rgba(0, 0, 0, 0.07);
+}
 
 /* Container général */
 .stats-container {
     max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
+    margin: 3rem auto;
+    padding: 0 2rem;
     font-family: 'Inter', sans-serif;
 }
 
 /* Titre principal */
 .stats-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     text-align: center;
-    color: #4b0082;
-    margin-bottom: 2rem;
+    color: var(--violet-dark);
+    margin-bottom: 2.5rem;
     font-family: 'Playfair Display', serif;
 }
 
@@ -20,57 +29,131 @@
 .filters {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
+
 .filters-form select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--gray-light);
     border-radius: 8px;
     font-size: 1rem;
+    background-color: var(--white);
+    color: var(--gray-dark);
+    transition: border-color 0.2s ease;
+}
+.filters-form select:hover {
+    border-color: var(--violet);
 }
 
 /* Section graphique */
 .chart-section {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+    background: var(--light-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 6px 20px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 .chart-section h2 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    color: #333;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    color: var(--violet-dark);
     text-align: center;
+}
+
+canvas#scoreChart,
+canvas#emotionsPieChart {
+    max-width: 600px;
+    width: 100%;
+    height: auto;
 }
 
 /* Liste des émotions */
 .top-emotions {
-    background: #faf9ff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    background: var(--light-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px var(--shadow);
 }
+
 .top-emotions h2 {
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-    color: #4b0082;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    color: var(--violet-dark);
+    text-align: center;
 }
+
 .top-emotions ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
+
 .top-emotions li {
-    padding: 0.4rem 0;
-    font-size: 1rem;
-    border-bottom: 1px solid #eee;
+    padding: 0.6rem 0.8rem;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--gray-light);
+    display: flex;
+    justify-content: space-between;
+    color: var(--gray-dark);
+}
+.top-emotions li:last-child {
+    border-bottom: none;
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .stats-container {
-        padding: 1rem;
+        padding: 1.5rem;
     }
+
+    .chart-section {
+        padding: 1.5rem;
+    }
+
+    .top-emotions {
+        padding: 1.5rem;
+    }
+
     .filters {
         justify-content: center;
     }
-    .top-emotions {
-        padding: 1rem;
-    }
+}
+.chart-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.card-pie {
+    background: #ffffff;
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(132, 96, 244, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-pie:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(132, 96, 244, 0.15);
+}
+
+.card-pie h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+    color: #4b0082;
+    font-weight: 600;
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
 }

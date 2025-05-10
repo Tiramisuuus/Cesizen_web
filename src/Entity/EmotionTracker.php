@@ -35,6 +35,21 @@ class EmotionTracker
     #[ORM\JoinTable(name: 'emotion_tracker_secondary_emotions')]
     private Collection $secondaryEmotions;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+
     public function __construct()
     {
         $this->secondaryEmotions = new ArrayCollection();
