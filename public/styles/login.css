@@ -155,3 +155,21 @@ body.auth-body {
         padding: 1.5rem 1rem;
     }
 }
+@media (min-width: 1024px) {
+    .auth-container {
+        max-width: 420px;
+    }
+
+    .auth-card {
+        padding: 2.5rem 2rem;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+    }
+
+    .auth-btn {
+        font-size: 1.05rem;
+        padding: 0.85rem;
+    }
+}

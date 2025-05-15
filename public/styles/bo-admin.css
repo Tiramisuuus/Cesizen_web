@@ -123,3 +123,71 @@
 .btn-secondary:hover {
     background: #ddd;
 }
+
+
+/* ================================
+   Responsive pour écrans ≥ 768px
+   ================================ */
+@media (min-width: 768px) {
+    .admin-container {
+        padding: 0 2rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        font-size: 1rem;
+    }
+
+    .admin-title {
+        font-size: 2.2rem;
+    }
+
+    .actions-cell {
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+}
+
+/* ================================
+   Responsive pour écrans ≤ 767px
+   ================================ */
+@media (max-width: 767px) {
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .admin-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.9rem;
+    }
+
+    .admin-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #8460f4;
+    }
+
+    .actions-cell {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+        margin-top: 0.5rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem;
+    }
+}

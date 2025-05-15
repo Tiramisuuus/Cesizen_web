@@ -27,12 +27,12 @@
             <tbody>
             {% for user in users %}
                 <tr class="{{ user.isActive ? '' : 'row-inactive' }}">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username ?: '–' }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
-                    <td>{{ user.isActive ? 'Oui' : 'Non' }}</td>
-                    <td class="actions-cell">
+                    <td data-label="ID">{{ user.id }}</td>
+                    <td data-label="Nom d'utilisateur">{{ user.username ?: '–' }}</td>
+                    <td data-label="Email">{{ user.email }}</td>
+                    <td data-label="Rôle">{{ user.role }}</td>
+                    <td data-label="Actif ?">{{ user.isActive ? 'Oui' : 'Non' }}</td>
+                    <td data-label="Actions" class="actions-cell">
                         <a href="{{ path('admin_users_edit', {'id':user.id}) }}" class="btn-edit" title="Éditer">✏️</a>
                         <form method="post" action="{{ path('admin_users_toggle', {'id':user.id}) }}" class="inline-form">
                             <button type="submit" class="btn-toggle" title="{{ user.isActive ? 'Désactiver' : 'Activer' }}">
@@ -53,6 +53,7 @@
                 <tr><td colspan="6" class="no-data">Aucun utilisateur trouvé.</td></tr>
             {% endfor %}
             </tbody>
+
         </table>
     </main>
 {% endblock %}

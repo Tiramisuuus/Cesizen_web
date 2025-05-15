@@ -53,6 +53,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_favorite_resources')]
     private Collection $favoriteResources;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+        return $this;
+    }
+
     public function __construct()
     {
         $this->emotionTrackers   = new ArrayCollection();

@@ -111,3 +111,25 @@
         text-align: center;
     }
 }
+
+
+@media (min-width: 1024px) {
+    .admin-container {
+        padding: 2.5rem 3rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+    }
+
+    .admin-form input,
+    .admin-form textarea {
+        font-size: 1.05rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.8rem 1.6rem;
+        font-size: 1rem;
+    }
+}

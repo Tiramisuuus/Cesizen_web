@@ -157,3 +157,27 @@ canvas#emotionsPieChart {
     max-width: 300px;
     margin: 0 auto;
 }
+@media (min-width: 1024px) {
+    .stats-container {
+        padding: 0 3rem;
+    }
+
+    .chart-section,
+    .top-emotions {
+        padding: 2.5rem;
+    }
+
+    .stats-title {
+        font-size: 2.8rem;
+    }
+
+    .chart-section h2,
+    .top-emotions h2,
+    .card-pie h2 {
+        font-size: 1.7rem;
+    }
+
+    .card-pie {
+        padding: 2rem 2.5rem;
+    }
+}

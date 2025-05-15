@@ -16,7 +16,8 @@ security:
 
         main:
             lazy: true
-
+    access_control:
+        - { path: ^/api/auth, roles: PUBLIC_ACCESS }
 
 
 

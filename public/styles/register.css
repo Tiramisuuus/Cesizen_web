@@ -163,3 +163,21 @@ body.register-body {
     .register-container { padding: 1rem; }
     .register-card { padding: 1.5rem 1rem; }
 }
+@media (min-width: 1024px) {
+    .register-container {
+        max-width: 460px;
+    }
+
+    .register-card {
+        padding: 2.5rem 2rem;
+    }
+
+    .register-title {
+        font-size: 2rem;
+    }
+
+    .register-btn {
+        font-size: 1.05rem;
+        padding: 0.9rem;
+    }
+}

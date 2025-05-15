@@ -328,3 +328,33 @@ body {
     background: #4b0082;
     transform: translateY(-2px);
 }
+@media (min-width: 1024px) {
+    .section-wrapper {
+        padding: 0 2rem;
+    }
+
+    .landing-row {
+        gap: 2.5rem;
+    }
+
+    .landing-text h2 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .resources h2,
+    .activities h2 {
+        font-size: 2.3rem;
+    }
+
+    .zen-footer {
+        padding: 3rem 2rem;
+    }
+}

@@ -153,3 +153,18 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+@media (min-width: 768px) {
+    .admin-form {
+        padding: 3rem;
+    }
+
+    .admin-title {
+        font-size: 2.2rem;
+    }
+
+    .form-actions .btn-primary,
+    .form-actions .btn-secondary {
+        font-size: 1rem;
+        padding: 0.75rem 1.6rem;
+    }
+}

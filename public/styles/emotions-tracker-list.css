@@ -185,3 +185,25 @@
     background: #4b0082;
     transform: translateY(-2px);
 }
+@media (min-width: 1024px) {
+    .tracker-list-container {
+        padding: 3rem;
+    }
+
+    .tracker-title {
+        font-size: 2.6rem;
+    }
+
+    .tracker-card {
+        padding: 2rem 2.5rem;
+    }
+
+    .tracker-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-stats {
+        font-size: 1rem;
+        padding: 0.7rem 1.5rem;
+    }
+}

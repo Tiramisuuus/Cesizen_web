@@ -155,3 +155,22 @@ html, body {
         box-shadow: 0 12px 25px rgba(186, 104, 200, 0.4); /* Plus de glow au menu ouvert */
     }
 }
+
+@media (min-width: 1024px) {
+    .container {
+        padding: 0 2rem;
+        height: 80px;
+    }
+
+    .logo img {
+        height: 56px;
+    }
+
+    .main-nav a {
+        font-size: 1rem;
+    }
+
+    .main-nav ul {
+        gap: 2.5rem;
+    }
+}

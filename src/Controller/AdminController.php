@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\EmotionTracker;
+use Symfony\Component\Uid\Uuid;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\InformationsRessources;
 use App\Entity\EmergencyInformations;
 use App\Entity\SecondaryEmotions;
@@ -202,4 +205,214 @@ class AdminController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/register', name: 'register', methods: ['POST'])]
+    public function register(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['email'], $data['password'])) {
+            return $this->json(['error' => 'Email et mot de passe requis'], 400);
+        }
+
+        if ($em->getRepository(User::class)->findOneBy(['email' => $data['email']])) {
+            return $this->json(['error' => 'Cet email est déjà utilisé.'], 409);
+        }
+
+        $user = new User();
+        $user->setEmail($data['email']);
+        $user->setPassword($hasher->hashPassword($user, $data['password']));
+        $user->setToken(Uuid::v4()->toRfc4122());
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json(['message' => 'Inscription réussie', 'token' => $user->getToken()]);
+    }
+    #[Route('/login', name: 'login', methods: ['POST'])]
+    public function login(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['email'], $data['password'])) {
+            return $this->json(['error' => 'Email et mot de passe requis'], 400);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+
+        if (!$user || !$hasher->isPasswordValid($user, $data['password'])) {
+            return $this->json(['error' => 'Identifiants invalides'], 401);
+        }
+
+        // Si pas encore de token (ancien compte), on en génère un
+        if (!$user->getToken()) {
+            $user->setToken(Uuid::v4()->toRfc4122());
+            $em->flush();
+        }
+
+        return $this->json(['message' => 'Connexion réussie', 'token' => $user->getToken()]);
+    }
+
+    #[Route('/resources', name: 'api_resources_list', methods: ['GET'])]
+    public function listResources(InformationsRessourcesRepository $repo): JsonResponse
+    {
+        $resources = $repo->findAll();
+        $data = [];
+
+        foreach ($resources as $res) {
+            $data[] = [
+                'id' => $res->getId(),
+                'name' => $res->getName(),
+                'description' => $res->getDescription(),
+                'content' => $res->getContent(),
+                'author' => $res->getAuthor()?->getEmail(),
+            ];
+        }
+
+        return $this->json($data);
+    }
+
+    #[Route('/logout', name: 'logout', methods: ['POST'])]
+    public function logout(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $token = $request->headers->get('Authorization');
+
+        if (!$token) {
+            return $this->json(['error' => 'Token manquant'], 401);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['token' => $token]);
+
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur non trouvé'], 404);
+        }
+
+        $user->setToken(null);
+        $em->flush();
+
+        return $this->json(['message' => 'Déconnexion réussie']);
+    }
+
+    #[Route('/emotion-trackers', name: 'api_emotion_tracker_list', methods: ['GET'])]
+    public function getEmotionTrackers(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $token = $request->headers->get('Authorization');
+        if (!$token) {
+            return $this->json(['error' => 'Token requis'], 401);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['token' => $token]);
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur invalide'], 403);
+        }
+
+        $trackers = $em->getRepository(EmotionTracker::class)->findBy(['user' => $user], ['createdAt' => 'DESC']);
+        $data = [];
+
+        foreach ($trackers as $tracker) {
+            $grouped = [];
+
+            foreach ($tracker->getSecondaryEmotions() as $emotion) {
+                $primary = $emotion->getPrimaryEmotion()?->getName() ?? 'Autre';
+                $grouped[$primary][] = $emotion->getName();
+            }
+
+            $data[] = [
+                'id' => $tracker->getId(),
+                'name' => $tracker->getName(),
+                'description' => $tracker->getDescription(),
+                'createdAt' => $tracker->getCreatedAt()->format('Y-m-d H:i:s'),
+                'groupedEmotions' => $grouped
+            ];
+        }
+
+        return $this->json($data);
+    }
+
+
+    #[Route('/emotion-trackers', name: 'api_emotion_tracker_add', methods: ['POST'])]
+    public function addEmotionTracker(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $token = $request->headers->get('Authorization');
+        if (!$token) {
+            return $this->json(['error' => 'Token requis'], 401);
+        }
+
+        $user = $em->getRepository(User::class)->findOneBy(['token' => $token]);
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur invalide'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['name'], $data['description'], $data['secondaryEmotions']) || !is_array($data['secondaryEmotions'])) {
+            return $this->json(['error' => 'Données invalides'], 400);
+        }
+
+        $tracker = new EmotionTracker();
+        $tracker->setName($data['name']);
+        $tracker->setDescription($data['description']);
+        $tracker->setCreatedAt(new \DateTimeImmutable());
+        $tracker->setUser($user);
+
+        foreach ($data['secondaryEmotions'] as $emotionId){
+            $emotion = $em->getRepository(SecondaryEmotions::class)->find($emotionId);
+            if ($emotion) {
+                $tracker->addSecondaryEmotion($emotion);
+            }
+        }
+
+        $em->persist($tracker);
+        $em->flush();
+
+        return $this->json(['message' => 'Émotion enregistrée avec succès']);
+    }
+
+    #[Route('/emotions/grouped', name: 'api_grouped_emotions', methods: ['GET'])]
+    public function getGroupedEmotions(SecondaryEmotionsRepository $repo, EntityManagerInterface $em): JsonResponse
+    {
+        $all = $repo->findAll();
+        $grouped = [];
+
+        foreach ($all as $emotion) {
+            $primary = $emotion->getPrimaryEmotion()?->getName() ?? 'Autres';
+            $grouped[$primary][] = [
+                'id' => $emotion->getId(),
+                'name' => $emotion->getName()
+            ];
+        }
+
+        return $this->json($grouped);
+    }
+    #[Route('/user/profile', name: 'api_user_profile', methods: ['GET'])]
+    public function getProfile(Request $request, UserRepository $userRepo): JsonResponse
+    {
+        // Récupération du token envoyé dans les headers
+        $token = $request->headers->get('Authorization');
+
+        if (!$token) {
+            return $this->json(['error' => 'Token manquant'], 401);
+        }
+
+        // Récupération de l'utilisateur
+        $user = $userRepo->findOneBy(['token' => $token]);
+
+        if (!$user) {
+            return $this->json(['error' => 'Utilisateur non trouvé'], 404);
+        }
+
+        return $this->json([
+            'username' => $user->getUsername(),
+            'email'    => $user->getEmail(),
+        ]);
+
+    }
+
+
+
 }

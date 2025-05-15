@@ -155,3 +155,26 @@
         flex: 1 1 100%;
     }
 }
+
+@media (min-width: 1024px) {
+    .tracker-container {
+        padding: 3rem 3rem;
+    }
+
+    .tracker-title {
+        font-size: 2.6rem;
+    }
+
+    .tracker-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .emotion-column {
+        padding: 1.5rem;
+    }
+
+    .btn-primary {
+        font-size: 1.05rem;
+        padding: 1rem 2rem;
+    }
+}
