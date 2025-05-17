@@ -13,7 +13,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\CallbackTransformer;
 
-// EmotionTrackerType.php
 class EmotionTrackerType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -27,7 +26,6 @@ class EmotionTrackerType extends AbstractType
                 'label' => 'Donnez nous des détails sur votre ressenti',
                 'required' => false,
             ]);
-        // on n'ajoute plus secondaryEmotions ici
     }
 
     public function configureOptions(OptionsResolver $resolver)

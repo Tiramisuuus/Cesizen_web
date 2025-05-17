@@ -1,5 +1,5 @@
 <?php
-// src/Controller/SecurityController.php
+
 namespace App\Controller;
 
 use App\Entity\User;
